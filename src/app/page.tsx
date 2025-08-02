@@ -1,103 +1,303 @@
-import Image from "next/image";
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import ArticleCard from '@/components/ArticleCard';
+import EventCard from '@/components/EventCard';
+import RecipeCard from '@/components/RecipeCard';
+import { HOMEPAGE_QUERY, EVENTS_QUERY, HERO_QUERY, ABOUT_QUERY, GET_RECIPES } from '@/lib/queries';
+import Link from 'next/link';
+import type { Post, EventProduct, Recipe } from '@/lib/types';
+import { decodeHtmlEntities } from '@/lib/utils';
 
-export default function Home() {
+// Fetch homepage data from WordPress GraphQL at build time
+async function getHomepageData() {
+  try {
+    const response = await fetch('https://jvs.org.uk/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: HOMEPAGE_QUERY.loc?.source.body,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch homepage data:', response.statusText);
+      return { posts: { nodes: [] } };
+    }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error('Error fetching homepage data:', error);
+    // Return fallback data if GraphQL fails
+    return {
+      posts: { nodes: [] },
+    };
+  }
+}
+
+// Fetch hero content from WordPress GraphQL at build time
+async function getHeroContent() {
+  try {
+    const response = await fetch('https://jvs.org.uk/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: HERO_QUERY.loc?.source.body,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch hero content:', response.statusText);
+      return null;
+    }
+
+    const result = await response.json();
+    return result.data?.post || null;
+  } catch (error) {
+    console.error('Error fetching hero content:', error);
+    return null;
+  }
+}
+
+// Fetch about page content from WordPress GraphQL at build time
+async function getAboutPageContent() {
+  try {
+    const response = await fetch('https://jvs.org.uk/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: ABOUT_QUERY.loc?.source.body,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch about page content:', response.statusText);
+      return null;
+    }
+
+    const result = await response.json();
+    return result.data?.page || null;
+  } catch (error) {
+    console.error('Error fetching about page content:', error);
+    return null;
+  }
+}
+
+// Fetch upcoming events from WordPress GraphQL at build time
+async function getUpcomingEvents(): Promise<EventProduct[]> {
+  try {
+    const response = await fetch('https://jvs.org.uk/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: EVENTS_QUERY.loc?.source.body,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch events:', response.statusText);
+      return [];
+    }
+
+    const result = await response.json();
+    const allEvents = result.data?.eventProducts || [];
+    
+    // Filter to only show upcoming events
+    const upcomingEvents = allEvents.filter((event: EventProduct) => {
+      const eventDate = new Date(event.eventDate);
+      const now = new Date();
+      return eventDate > now;
+    });
+
+    // Return only the first 3 upcoming events
+    return upcomingEvents.slice(0, 3);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    return [];
+  }
+}
+
+// Fetch latest recipes from WordPress GraphQL at build time
+async function getLatestRecipes(): Promise<Recipe[]> {
+  try {
+    const response = await fetch('https://jvs.org.uk/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: GET_RECIPES.loc?.source.body,
+        variables: {
+          first: 3, // Get 3 latest recipes
+        }
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch recipes:', response.statusText);
+      return [];
+    }
+
+    const result = await response.json();
+    return result.data?.recipes || [];
+  } catch (error) {
+    console.error('Error fetching recipes:', error);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  const [homepageData, events, heroContent, aboutContent, recipes] = await Promise.all([
+    getHomepageData(),
+    getUpcomingEvents(),
+    getHeroContent(),
+    getAboutPageContent(),
+    getLatestRecipes(),
+  ]);
+
+  const posts = homepageData?.posts?.nodes || [];
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-neutral-50">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="bg-[#E1F0D1] text-gray-900">
+        <div className="container mx-auto px-4 py-16 text-center">
+          <div className="mb-8">
+            <div className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+              {/* Use WordPress title */}
+              <h1 className="text-3xl md:text-4xl font-bold mb-6">
+                {heroContent?.title || 'JVS – Jewish, Vegan & Sustainable'}
+              </h1>
+              {/* Description */}
+              <div className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+                {heroContent?.excerpt ? (
+                  <div dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(heroContent.excerpt) }} />
+                ) : (
+                  <p>JVS is the UK Jewish community&apos;s non-profit dedicated to promoting food ethics, sustainability, and concern for all living creatures.</p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/events/"
+              className="bg-white text-[#2E7D32] px-8 py-3 rounded-lg font-semibold hover:bg-neutral-100 transition-colors"
+            >
+              View Events
+            </Link>
+            <Link
+              href="/articles/"
+              className="bg-[#E1F0D1] text-[#2E7D32] px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#2E7D32] transition-colors border-2 border-[#2E7D32]"
+            >
+              Read Articles
+            </Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* Upcoming Events Section */}
+      {events.length > 0 && (
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-neutral-900">Upcoming Events</h2>
+              <Link
+                href="/events"
+                className="text-[#4FC3F7] hover:text-[#558B2F] font-semibold"
+              >
+                View All Events →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Latest Articles Section */}
+      {posts.length > 0 && (
+        <section className="py-16 bg-neutral-50">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-neutral-900">Latest Articles</h2>
+              <Link
+                href="/articles"
+                className="text-[#4FC3F7] hover:text-[#558B2F] font-semibold"
+              >
+                View All Articles →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post: Post) => (
+                <ArticleCard key={post.id} post={post} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Latest Recipes Section */}
+      {recipes.length > 0 && (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-neutral-900">Latest Recipes</h2>
+              <Link
+                href="/recipes"
+                className="text-[#4FC3F7] hover:text-[#558B2F] font-semibold"
+              >
+                View All Recipes →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recipes.map((recipe: Recipe) => (
+                <RecipeCard key={recipe.id} recipe={recipe} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* About Section */}
+      <section className="py-16 bg-neutral-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-neutral-900 mb-6">
+              {aboutContent?.title || 'About the Jewish Vegetarian Society'}
+            </h2>
+            <div 
+              className="text-lg text-neutral-700 mb-8 prose prose-lg mx-auto"
+            >
+              {aboutContent?.content ? (
+                <div dangerouslySetInnerHTML={{ __html: decodeHtmlEntities(aboutContent.content) }} />
+              ) : (
+                <p>We are a community dedicated to exploring the intersection of Jewish values and vegetarianism. Through events, education, and advocacy, we promote ethical eating, environmental stewardship, and compassionate living in line with Jewish traditions.</p>
+              )}
+            </div>
+            <Link
+              href="/about"
+              className="bg-[#8BC34A] hover:bg-[#558B2F] text-white px-8 py-3 rounded-lg font-semibold transition-colors"
+            >
+              Learn More About Us
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }

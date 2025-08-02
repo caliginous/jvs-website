@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+	
+	<!-- Meta -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	
+	<!-- Link -->
+	<link rel="profile" href="https://gmpg.org/xfn/11">
+	<link rel="pingback" href="https://www.jvs.org.uk/xmlrpc.php">
+
+	<!-- WP Head -->
+	<title>Page not found &#8211; JVS: Jewish &#8211; Vegan &#8211; Sustainable</title>
+<meta name='robots' content='max-image-preview:large' />
+	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
+	<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel="alternate" type="application/rss+xml" title="JVS: Jewish - Vegan - Sustainable &raquo; Feed" href="https://www.jvs.org.uk/feed/" />
+<link rel="alternate" type="application/rss+xml" title="JVS: Jewish - Vegan - Sustainable &raquo; Comments Feed" href="https://www.jvs.org.uk/comments/feed/" />
+		<!-- This site uses the Google Analytics by ExactMetrics plugin v8.7.1 - Using Analytics tracking - https://www.exactmetrics.com/ -->
+							<script src="//www.googletagmanager.com/gtag/js?id=G-3HXC4BVXNX"  data-cfasync="false" data-wpfc-render="false" type="text/javascript" async></script>
+			<script data-cfasync="false" data-wpfc-render="false" type="text/javascript">
+				var em_version = '8.7.1';
+				var em_track_user = true;
+				var em_no_track_reason = '';
+								var ExactMetricsDefaultLocations = {"page_location":"https:\/\/www.jvs.org.uk\/wp-content\/uploads\/2023\/03\/philip-pick.jpg\/"};
+								if ( typeof ExactMetricsPrivacyGuardFilter === 'function' ) {
+					var ExactMetricsLocations = (typeof ExactMetricsExcludeQuery === 'object') ? ExactMetricsPrivacyGuardFilter( ExactMetricsExcludeQuery ) : ExactMetricsPrivacyGuardFilter( ExactMetricsDefaultLocations );
+				} else {
+					var ExactMetricsLocations = (typeof ExactMetricsExcludeQuery === 'object') ? ExactMetricsExcludeQuery : ExactMetricsDefaultLocations;
+				}
+
+								var disableStrs = [
+										'ga-disable-G-3HXC4BVXNX',
+									];
+
+				/* Function to detect opted out users */
+				function __gtagTrackerIsOptedOut() {
+					for (var index = 0; index < disableStrs.length; index++) {
+						if (document.cookie.indexOf(disableStrs[index] + '=true') > -1) {
+							return true;
+						}
+					}
+
+					return false;
+				}
+
+				/* Disable tracking if the opt-out cookie exists. */
+				if (__gtagTrackerIsOptedOut()) {
+					for (var index = 0; index < disableStrs.length; index++) {
+						window[disableStrs[index]] = true;
+					}
+				}
+
+				/* Opt-out function */
+				function __gtagTrackerOptout() {
+					for (var index = 0; index < disableStrs.length; index++) {
+						document.cookie = disableStrs[index] + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+						window[disableStrs[index]] = true;
+					}
+				}
+
+				if ('undefined' === typeof gaOptout) {
+					function gaOptout() {
+						__gtagTrackerOptout();
+					}
+				}
+								window.dataLayer = window.dataLayer || [];
+
+				window.ExactMetricsDualTracker = {
+					helpers: {},
+					trackers: {},
+				};
+				if (em_track_user) {
+					function __gtagDataLayer() {
+						dataLayer.push(arguments);
+					}
+
+					function __gtagTracker(type, name, parameters) {
+						if (!parameters) {
+							parameters = {};
+						}
+
+						if (parameters.send_to) {
+							__gtagDataLayer.apply(null, arguments);
+							return;
+						}
+
+						if (type === 'event') {
+														parameters.send_to = exactmetrics_frontend.v4_id;
+							var hookName = name;
+							if (typeof parameters['event_category'] !== 'undefined') {
+								hookName = parameters['event_category'] + ':' + name;
+							}
+
+							if (typeof ExactMetricsDualTracker.trackers[hookName] !== 'undefined') {
+								ExactMetricsDualTracker.trackers[hookName](parameters);
+							} else {
+								__gtagDataLayer('event', name, parameters);
+							}
+							
+						} else {
+							__gtagDataLayer.apply(null, arguments);
+						}
+					}
+
+					__gtagTracker('js', new Date());
+					__gtagTracker('set', {
+						'developer_id.dNDMyYj': true,
+											});
+					if ( ExactMetricsLocations.page_location ) {
+						__gtagTracker('set', ExactMetricsLocations);
+					}
+										__gtagTracker('config', 'G-3HXC4BVXNX', {"forceSSL":"true","page_path":'\/404.html?page=' + document.location.pathname + document.location.search + '&from=' + document.referrer} );
+															window.gtag = __gtagTracker;										(function () {
+						/* https://developers.google.com/analytics/devguides/collection/analyticsjs/ */
+						/* ga and __gaTracker compatibility shim. */
+						var noopfn = function () {
+							return null;
+						};
+						var newtracker = function () {
+							return new Tracker();
+						};
+						var Tracker = function () {
+							return null;
+						};
+						var p = Tracker.prototype;
+						p.get = noopfn;
+						p.set = noopfn;
+						p.send = function () {
+							var args = Array.prototype.slice.call(arguments);
+							args.unshift('send');
+							__gaTracker.apply(null, args);
+						};
+						var __gaTracker = function () {
+							var len = arguments.length;
+							if (len === 0) {
+								return;
+							}
+							var f = arguments[len - 1];
+							if (typeof f !== 'object' || f === null || typeof f.hitCallback !== 'function') {
+								if ('send' === arguments[0]) {
+									var hitConverted, hitObject = false, action;
+									if ('event' === arguments[1]) {
+										if ('undefined' !== typeof arguments[3]) {
+											hitObject = {
+												'eventAction': arguments[3],
+												'eventCategory': arguments[2],
+												'eventLabel': arguments[4],
+												'value': arguments[5] ? arguments[5] : 1,
+											}
+										}
+									}
+									if ('pageview' === arguments[1]) {
+										if ('undefined' !== typeof arguments[2]) {
+											hitObject = {
+												'eventAction': 'page_view',
+												'page_path': arguments[2],
+											}
+										}
+									}
+									if (typeof arguments[2] === 'object') {
+										hitObject = arguments[2];
+									}
+									if (typeof arguments[5] === 'object') {
+										Object.assign(hitObject, arguments[5]);
+									}
+									if ('undefined' !== typeof arguments[1].hitType) {
+										hitObject = arguments[1];
+										if ('pageview' === hitObject.hitType) {
+											hitObject.eventAction = 'page_view';
+										}
+									}
+									if (hitObject) {
+										action = 'timing' === arguments[1].hitType ? 'timing_complete' : hitObject.eventAction;
+										hitConverted = mapArgs(hitObject);
+										__gtagTracker('event', action, hitConverted);
+									}
+								}
+								return;
+							}
+
+							function mapArgs(args) {
+								var arg, hit = {};
+								var gaMap = {
+									'eventCategory': 'event_category',
+									'eventAction': 'event_action',
+									'eventLabel': 'event_label',
+									'eventValue': 'event_value',
+									'nonInteraction': 'non_interaction',
+									'timingCategory': 'event_category',
+									'timingVar': 'name',
+									'timingValue': 'value',
+									'timingLabel': 'event_label',
+									'page': 'page_path',
+									'location': 'page_location',
+									'title': 'page_title',
+									'referrer' : 'page_referrer',
+								};
+								for (arg in args) {
+																		if (!(!args.hasOwnProperty(arg) || !gaMap.hasOwnProperty(arg))) {
+										hit[gaMap[arg]] = args[arg];
+									} else {
+										hit[arg] = args[arg];
+									}
+								}
+								return hit;
+							}
+
+							try {
+								f.hitCallback();
+							} catch (ex) {
+							}
+						};
+						__gaTracker.create = newtracker;
+						__gaTracker.getByName = newtracker;
+						__gaTracker.getAll = function () {
+							return [];
+						};
+						__gaTracker.remove = noopfn;
+						__gaTracker.loaded = true;
+						window['__gaTracker'] = __gaTracker;
+					})();
+									} else {
+										console.log("");
+					(function () {
+						function __gtagTracker() {
+							return null;
+						}
+
+						window['__gtagTracker'] = __gtagTracker;
+						window['gtag'] = __gtagTracker;
+					})();
+									}
+			</script>
+				<!-- / Google Analytics by ExactMetrics -->
+		<script type="text/javascript">
+/* <![CDATA[ */
+window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16.0.1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16.0.1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/www.jvs.org.uk\/wp-includes\/js\/wp-emoji-release.min.js?ver=6.8.2"}};
+/*! This file is auto-generated */
+!function(s,n){var o,i,e;function c(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function p(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data),a=(e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0),new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data));return t.every(function(e,t){return e===a[t]})}function u(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);for(var n=e.getImageData(16,16,1,1),a=0;a<n.data.length;a++)if(0!==n.data[a])return!1;return!0}function f(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\udedf")}return!1}function g(e,t,n,a){var r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):s.createElement("canvas"),o=r.getContext("2d",{willReadFrequently:!0}),i=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(function(e){i[e]=t(o,e,n,a)}),i}function t(e){var t=s.createElement("script");t.src=e,t.defer=!0,s.head.appendChild(t)}"undefined"!=typeof Promise&&(o="wpEmojiSettingsSupports",i=["flag","emoji"],n.supports={everything:!0,everythingExceptFlag:!0},e=new Promise(function(e){s.addEventListener("DOMContentLoaded",e,{once:!0})}),new Promise(function(t){var n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+g.toString()+"("+[JSON.stringify(i),f.toString(),p.toString(),u.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"}),r=new Worker(URL.createObjectURL(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=function(e){c(n=e.data),r.terminate(),t(n)})}catch(e){}c(n=g(i,f,p,u))}t(n)}).then(function(e){for(var t in e)n.supports[t]=e[t],n.supports.everything=n.supports.everything&&n.supports[t],"flag"!==t&&(n.supports.everythingExceptFlag=n.supports.everythingExceptFlag&&n.supports[t]);n.supports.everythingExceptFlag=n.supports.everythingExceptFlag&&!n.supports.flag,n.DOMReady=!1,n.readyCallback=function(){n.DOMReady=!0}}).then(function(){return e}).then(function(){var e;n.supports.everything||(n.readyCallback(),(e=n.source||{}).concatemoji?t(e.concatemoji):e.wpemoji&&e.twemoji&&(t(e.twemoji),t(e.wpemoji)))}))}((window,document),window._wpemojiSettings);
+/* ]]> */
+</script>
+<style id='wp-emoji-styles-inline-css' type='text/css'>
+
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+</style>
+<link rel='stylesheet' id='wp-block-library-css' href='https://www.jvs.org.uk/wp-includes/css/dist/block-library/style.min.css?ver=6.8.2' type='text/css' media='all' />
+<style id='classic-theme-styles-inline-css' type='text/css'>
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+</style>
+<style id='global-styles-inline-css' type='text/css'>
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
+:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}
+</style>
+<link rel='stylesheet' id='event-tickets-manager-for-woocommerce-pro-css' href='https://www.jvs.org.uk/wp-content/plugins/event-tickets-manager-for-woocommerce-pro/public/css/event-tickets-manager-for-woocommerce-pro-public.css?ver=1753390511' type='text/css' media='all' />
+<link rel='stylesheet' id='event-tickets-manager-for-woocommerce-procommon-css' href='https://www.jvs.org.uk/wp-content/plugins/event-tickets-manager-for-woocommerce-pro/common/css/event-tickets-manager-for-woocommerce-pro-common.css?ver=2.1.2' type='text/css' media='all' />
+<link rel='stylesheet' id='event-tickets-manager-for-woocommerce-css' href='https://www.jvs.org.uk/wp-content/plugins/event-tickets-manager-for-woocommerce/public/src/scss/event-tickets-manager-for-woocommerce-public.css?ver=1.4.6' type='text/css' media='all' />
+<link rel='stylesheet' id='meridian-popup-main-css-css' href='https://www.jvs.org.uk/wp-content/plugins/meridian-popup/css/main.css?ver=1.0.1' type='text/css' media='all' />
+<link rel='stylesheet' id='meridian-promo-bar-main-css-css' href='https://www.jvs.org.uk/wp-content/plugins/meridian-promo-bar/css/main.css?ver=1.0' type='text/css' media='all' />
+<link rel='stylesheet' id='meridian-styler-css-animate-css' href='https://www.jvs.org.uk/wp-content/plugins/meridian-styler/css/animate.css?ver=1.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='woocommerce-layout-css' href='https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='woocommerce-smallscreen-css' href='https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.0.3' type='text/css' media='only screen and (max-width: 768px)' />
+<link rel='stylesheet' id='woocommerce-general-css' href='https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.0.3' type='text/css' media='all' />
+<style id='woocommerce-inline-inline-css' type='text/css'>
+.woocommerce form .form-row .required { visibility: visible; }
+</style>
+<link rel='stylesheet' id='brands-styles-css' href='https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/css/brands.css?ver=10.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='meridian-recipes-style-css' href='https://www.jvs.org.uk/wp-content/themes/meridian-recipes/style.css?ver=1.7.5.5' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css' href='https://www.jvs.org.uk/wp-content/themes/meridian-recipes/css/fonts/font-awesome/font-awesome.css?ver=6.8.2' type='text/css' media='all' />
+<link rel='stylesheet' id='meridian-recipes-plugins-css' href='https://www.jvs.org.uk/wp-content/themes/meridian-recipes/css/plugins.css?ver=6.8.2' type='text/css' media='all' />
+<link rel='stylesheet' id='meridian-rercipes-print-style-css' href='https://www.jvs.org.uk/wp-content/themes/meridian-recipes/print.css?ver=1.7.5.5' type='text/css' media='print' />
+<link rel='stylesheet' id='meridian-recipes-google-fonts-css' href='//fonts.googleapis.com/css?family=Vollkorn%3A400%2C700%2C400italic%7CLato%3A400%2C300%2C400italic%2C700%2C700italic&#038;ver=1.0.0' type='text/css' media='all' />
+<link rel='stylesheet' id='meridian-recipes-woocommerce-css' href='https://www.jvs.org.uk/wp-content/themes/meridian-recipes/css/woocommerce.css?ver=1.7.5.5' type='text/css' media='all' />
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-includes/js/jquery/jquery.min.js?ver=3.7.1" id="jquery-core-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1" id="jquery-migrate-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/google-analytics-dashboard-for-wp/assets/js/frontend-gtag.js?ver=8.7.1" id="exactmetrics-frontend-script-js" async="async" data-wp-strategy="async"></script>
+<script data-cfasync="false" data-wpfc-render="false" type="text/javascript" id='exactmetrics-frontend-script-js-extra'>/* <![CDATA[ */
+var exactmetrics_frontend = {"js_events_tracking":"true","download_extensions":"zip,mp3,mpeg,pdf,docx,pptx,xlsx,rar","inbound_paths":"[{\"path\":\"\\\/go\\\/\",\"label\":\"affiliate\"},{\"path\":\"\\\/recommend\\\/\",\"label\":\"affiliate\"}]","home_url":"https:\/\/www.jvs.org.uk","hash_tracking":"false","v4_id":"G-3HXC4BVXNX"};/* ]]> */
+</script>
+<script type="text/javascript" id="event-tickets-manager-for-woocommerce-pro-js-extra">
+/* <![CDATA[ */
+var etmfwp_public_param = {"ajaxurl":"https:\/\/www.jvs.org.uk\/wp-admin\/admin-ajax.php","wps_etmfw_nonce":"9f1842faeb","event_view":"list","wps_is_event_in_calender_shortcode":"","wps_etmfw_require_text":"Please Fill All the Required (*) Fields","wps_etmfw_email_text":"Please enter correct email","wps_etmfw_enable_subscribe_checkbox":"","is_checkout":"","wps_label_future_sub":"Subscribe to future event notifications"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/event-tickets-manager-for-woocommerce-pro/public/js/event-tickets-manager-for-woocommerce-pro-public.js?ver=1753390511" id="event-tickets-manager-for-woocommerce-pro-js"></script>
+<script type="text/javascript" id="event-tickets-manager-for-woocommerce-procommon-js-extra">
+/* <![CDATA[ */
+var etmfwp_common_param = {"ajaxurl":"https:\/\/www.jvs.org.uk\/wp-admin\/admin-ajax.php"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/event-tickets-manager-for-woocommerce-pro/common/js/event-tickets-manager-for-woocommerce-pro-common.js?ver=2.1.2" id="event-tickets-manager-for-woocommerce-procommon-js"></script>
+<script type="text/javascript" id="event-tickets-manager-for-woocommerce-js-extra">
+/* <![CDATA[ */
+var etmfw_public_param = {"ajaxurl":"https:\/\/www.jvs.org.uk\/wp-admin\/admin-ajax.php","wps_etmfw_public_nonce":"6b4eb1f9cd","is_required":" Is Required","wps_etmfw_dyn_name":"","wps_etmfw_dyn_mail":"","wps_etmfw_dyn_contact":"","wps_etmfw_dyn_date":"","wps_etmfw_dyn_address":"","wps_is_pro_active":"yes","wps_dyn_name":" Name","wps_dyn_mail":" Email","wps_dyn_contact":" Contact","wps_dyn_date":" Date","wps_dyn_address":" Address","wps_event_product_url":"","wps_event_purchase_limit":"","wps_etmfw_set_limit_qty":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/event-tickets-manager-for-woocommerce/public/src/js/event-tickets-manager-for-woocommerce-public.js?ver=1.4.6" id="event-tickets-manager-for-woocommerce-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-includes/js/jquery/ui/core.min.js?ver=1.13.3" id="jquery-ui-core-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-includes/js/jquery/ui/mouse.min.js?ver=1.13.3" id="jquery-ui-mouse-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-includes/js/jquery/ui/sortable.min.js?ver=1.13.3" id="jquery-ui-sortable-js"></script>
+<script type="text/javascript" id="event-tickets-manager-for-woocommercepublic-org-custom-js-js-extra">
+/* <![CDATA[ */
+var etmfw_org_custom_param_public = {"ajaxurl":"https:\/\/www.jvs.org.uk\/wp-admin\/admin-ajax.php","nonce":"b6aaf7cb56","wps_etmfw_public_nonce":"6b4eb1f9cd","wps_etmfw_event_dashboard_color":""};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/event-tickets-manager-for-woocommerce/public/src/js/event-tickets-manager-for-woocommerce-org-custom-public.js?ver=1.4.6" id="event-tickets-manager-for-woocommercepublic-org-custom-js-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.7.0-wc.10.0.3" id="jquery-blockui-js" defer="defer" data-wp-strategy="defer"></script>
+<script type="text/javascript" id="wc-add-to-cart-js-extra">
+/* <![CDATA[ */
+var wc_add_to_cart_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_view_cart":"View basket","cart_url":"https:\/\/www.jvs.org.uk\/basket\/","is_cart":"","cart_redirect_after_add":"no"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/js/frontend/add-to-cart.min.js?ver=10.0.3" id="wc-add-to-cart-js" defer="defer" data-wp-strategy="defer"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js?ver=2.1.4-wc.10.0.3" id="js-cookie-js" defer="defer" data-wp-strategy="defer"></script>
+<script type="text/javascript" id="woocommerce-js-extra">
+/* <![CDATA[ */
+var woocommerce_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_password_show":"Show password","i18n_password_hide":"Hide password"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js?ver=10.0.3" id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
+<script type="text/javascript" id="WCPAY_ASSETS-js-extra">
+/* <![CDATA[ */
+var wcpayAssets = {"url":"https:\/\/www.jvs.org.uk\/wp-content\/plugins\/woocommerce-payments\/dist\/"};
+/* ]]> */
+</script>
+<link rel="https://api.w.org/" href="https://www.jvs.org.uk/wp-json/" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://www.jvs.org.uk/xmlrpc.php?rsd" />
+<meta name="generator" content="WordPress 6.8.2" />
+<meta name="generator" content="WooCommerce 10.0.3" />
+		<script>
+			document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+		</script>
+				<style>
+			.no-js img.lazyload {
+				display: none;
+			}
+
+			figure.wp-block-image img.lazyloading {
+				min-width: 150px;
+			}
+
+			.lazyload,
+			.lazyloading {
+				--smush-placeholder-width: 100px;
+				--smush-placeholder-aspect-ratio: 1/1;
+				width: var(--smush-placeholder-width) !important;
+				aspect-ratio: var(--smush-placeholder-aspect-ratio) !important;
+			}
+
+						.lazyload, .lazyloading {
+				opacity: 0;
+			}
+
+			.lazyloaded {
+				opacity: 1;
+				transition: opacity 400ms;
+				transition-delay: 0ms;
+			}
+
+					</style>
+			<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
+	<link rel="icon" href="https://www.jvs.org.uk/wp-content/uploads/2023/01/cropped-JVS-Square-Logo-transparent-we-are-vegan-32x32.jpg" sizes="32x32" />
+<link rel="icon" href="https://www.jvs.org.uk/wp-content/uploads/2023/01/cropped-JVS-Square-Logo-transparent-we-are-vegan-192x192.jpg" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://www.jvs.org.uk/wp-content/uploads/2023/01/cropped-JVS-Square-Logo-transparent-we-are-vegan-180x180.jpg" />
+<meta name="msapplication-TileImage" content="https://www.jvs.org.uk/wp-content/uploads/2023/01/cropped-JVS-Square-Logo-transparent-we-are-vegan-270x270.jpg" />
+				<style type="text/css" id="c4wp-checkout-css">
+					.woocommerce-checkout .c4wp_captcha_field {
+						margin-bottom: 10px;
+						margin-top: 15px;
+						position: relative;
+						display: inline-block;
+					}
+				</style>
+								<style type="text/css" id="c4wp-v3-lp-form-css">
+					.login #login, .login #lostpasswordform {
+						min-width: 350px !important;
+					}
+					.wpforms-field-c4wp iframe {
+						width: 100% !important;
+					}
+				</style>
+							<style type="text/css" id="c4wp-v3-lp-form-css">
+				.login #login, .login #lostpasswordform {
+					min-width: 350px !important;
+				}
+				.wpforms-field-c4wp iframe {
+					width: 100% !important;
+				}
+			</style>
+			
+</head>
+<body class="error404 wp-embed-responsive wp-theme-meridian-recipes theme-meridian-recipes woocommerce-no-js body-pagination-type-click body-desktop-navigation-sticky">
+
+	
+	<div id="page" class="site">
+
+		<header id="header" class="site-header ">
+
+			
+			<div id="header-inner" class="clearfix">
+
+				<div id="header-main">
+
+					<div class="wrapper clearfix">
+
+						<div id="header-left">
+			<div class="header-search">
+			<form method="get" action="https://www.jvs.org.uk/">
+				<input type="text" class="header-search-input" name="s" value="" placeholder="Search the site" data-mtst-selector='.header-search input.header-search-input' data-mtst-label="Header Search Input" />
+			</form>
+			<span class="header-search-icon" data-mtst-selector=".header-search-icon" data-mtst-label="Header Search Icon" data-mtst-no-support="background,spacing,border"><span class="fa fa-search"></span></span>
+		</div><!-- .header-search -->
+			</div><!-- #header-left -->
+						<div id="header-middle">
+
+	
+	<div id="logo">
+		<a href="https://www.jvs.org.uk/" rel="home"><img class="has-retina-ver" src="https://www.jvs.org.uk/wp-content/uploads/2023/01/JVS-Square-Logo-transparent-we-are-vegan-cropped.jpg" data-retina-ver="https://www.jvs.org.uk/wp-content/uploads/2023/01/JVS-Square-Logo-transparent-we-are-vegan-cropped.jpg" alt="JVS: Jewish - Vegan - Sustainable" /></a>
+	</div><!-- #logo -->
+
+</div><!-- #header-middle -->
+						<div id="header-right">
+
+			<div class="header-social" data-mtst-selector=".header-social a" data-mtst-label="Header Social Links" data-mtst-no-support="border,background">
+							<a href="https://www.twitter.com/JewishVegSoc" target="_blank"><span class="fa fa-twitter"></span></a>
+										<a href="https://www.facebook.com/JewishVegUK" target="_blank"><span class="fa fa-facebook"></span></a>
+										<a href="https://www.youtube.com/user/JewishVegSociety" target="_blank"><span class="fa fa-youtube-play"></span></a>
+																						<a href="https://www.instagram.com/jewishvegsoc" target="_blank"><span class="fa fa-instagram"></span></a>
+																													</div><!-- .header-social -->
+	
+	
+</div><!-- #header-right -->
+					</div><!-- .wrapper -->
+
+				</div><!-- #header-main -->
+
+                <nav id="navigation" class="font-family-3" data-mtst-selector="#navigation .menu > li > a" data-mtst-label="Navigation Items" data-mtst-no-support="background,border">
+	<div class="wrapper clearfix">
+		<div class="menu-primary-container"><ul id="primary-menu" class="menu"><li id="menu-item-136" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-136"><a href="https://www.jvs.org.uk/">Home</a></li>
+<li id="menu-item-141" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-141"><a href="https://www.jvs.org.uk/about/">About</a>
+<ul class="sub-menu">
+	<li id="menu-item-33" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33"><a href="https://www.jvs.org.uk/contact/">Contact</a></li>
+	<li id="menu-item-9829" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-9829"><a href="https://www.jvs.org.uk/about-2/jobs/">Volunteering</a></li>
+	<li id="menu-item-6024" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6024"><a href="https://www.jvs.org.uk/2017/04/04/what-we-do/">Who we are</a></li>
+	<li id="menu-item-6016" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6016"><a href="https://www.jvs.org.uk/2017/04/04/trustees-and-staff/">The People Behind Our Mission</a></li>
+	<li id="menu-item-6019" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6019"><a href="https://www.jvs.org.uk/2017/04/04/history-of-the-jvs/">History of JVS</a></li>
+	<li id="menu-item-6032" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6032"><a href="https://www.jvs.org.uk/2017/04/04/jvs-jerusalem-ginger-the-vegetarian-community-centre-in-jerusalem/">JVS Jerusalem / Ginger – the Vegetarian Community Centre in Jerusalem</a></li>
+</ul>
+</li>
+<li id="menu-item-6237" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-6237"><a href="https://www.jvs.org.uk/recipes/">Recipes</a>
+<ul class="sub-menu">
+	<li id="menu-item-7988" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7988"><a href="https://www.jvs.org.uk/recipes-category/festival-cooking/">Festival Cooking</a></li>
+	<li id="menu-item-7993" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7993"><a href="https://www.jvs.org.uk/recipes-category/main-courses/">Main Courses</a></li>
+	<li id="menu-item-7989" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7989"><a href="https://www.jvs.org.uk/recipes-category/sides-and-snacks/">Sides &#038; snacks</a></li>
+	<li id="menu-item-7990" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7990"><a href="https://www.jvs.org.uk/recipes-category/soups-and-salads/">Soups and Salads</a></li>
+	<li id="menu-item-7991" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7991"><a href="https://www.jvs.org.uk/recipes-category/baking/">Baking</a></li>
+	<li id="menu-item-7992" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7992"><a href="https://www.jvs.org.uk/recipes-category/desserts/">Desserts</a></li>
+</ul>
+</li>
+<li id="menu-item-6087" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-6087"><a href="https://patreon.com/user?u=84615181">Membership &#038; Donations</a>
+<ul class="sub-menu">
+	<li id="menu-item-6088" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6088"><a href="https://www.patreon.com/user?u=84615181">Support us</a></li>
+	<li id="menu-item-9920" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-9920"><a href="https://www.jvs.org.uk/membership/">Life Membership</a></li>
+	<li id="menu-item-6073" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6073"><a href="https://www.jvs.org.uk/support-us/remember-the-jvs-in-your-will/">Remember the JVS in your Will</a></li>
+</ul>
+</li>
+<li id="menu-item-142" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-142"><a href="https://www.jvs.org.uk/resources/">Resources</a>
+<ul class="sub-menu">
+	<li id="menu-item-6048" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-6048"><a href="https://www.jvs.org.uk/why-vegetarian/judaism/">Why Vegan?</a>
+	<ul class="sub-menu">
+		<li id="menu-item-6047" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6047"><a href="https://www.jvs.org.uk/why-vegetarian/judaism/">Judaism</a></li>
+		<li id="menu-item-6043" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6043"><a href="https://www.jvs.org.uk/why-vegetarian/animals/">Animals</a></li>
+		<li id="menu-item-6044" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6044"><a href="https://www.jvs.org.uk/why-vegetarian/environment/">Environment</a></li>
+		<li id="menu-item-6045" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6045"><a href="https://www.jvs.org.uk/why-vegetarian/feeding-the-world/">Feeding the World</a></li>
+		<li id="menu-item-6046" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6046"><a href="https://www.jvs.org.uk/why-vegetarian/health/">Health</a></li>
+	</ul>
+</li>
+	<li id="menu-item-8366" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8366"><a href="https://www.jvs.org.uk/jewish-veganism/">Jewish Veganism</a></li>
+	<li id="menu-item-8492" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8492"><a href="https://www.jvs.org.uk/jvs-live-videos/">JVS Live Videos</a></li>
+	<li id="menu-item-8431" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8431"><a href="https://www.jvs.org.uk/list-of-vegan-jewish-clergy/">List of vegan Jewish clergy</a></li>
+	<li id="menu-item-6055" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6055"><a href="https://www.jvs.org.uk/festival-resource-packs/">Jewish festival packs</a></li>
+	<li id="menu-item-8373" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8373"><a href="https://www.jvs.org.uk/being-jewish-and-vegan-faqs/">FAQs</a></li>
+	<li id="menu-item-6049" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6049"><a href="https://www.jvs.org.uk/the-jewish-vegetarian-magazine/">The JVS Magazine</a></li>
+	<li id="menu-item-6054" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-6054"><a href="https://www.jvs.org.uk/library-3/">Community Library</a>
+	<ul class="sub-menu">
+		<li id="menu-item-6051" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6051"><a href="https://www.jvs.org.uk/articles/">Articles</a></li>
+	</ul>
+</li>
+	<li id="menu-item-6052" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6052"><a href="https://www.jvs.org.uk/how-to/">How to…</a></li>
+	<li id="menu-item-6053" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6053"><a href="https://www.jvs.org.uk/veganoptionsatkoshercaterersbakeriesrestaurants/">Vegan options at caterers, bakeries, restaurants</a></li>
+	<li id="menu-item-6050" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6050"><a href="https://www.jvs.org.uk/videos/">Videos</a></li>
+</ul>
+</li>
+<li id="menu-item-7221" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7221"><a href="https://www.jvs.org.uk/venuehire/">Venue hire</a></li>
+<li id="menu-item-10309" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10309"><a href="https://www.jvs.org.uk/calendar/">Calendar</a></li>
+<li id="menu-item-11748" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-11748"><a href="https://www.jvs.org.uk/2025/04/30/donate-our-jvs-garden-fundraiser/">Donate: our JVS Garden Fundraiser</a></li>
+<li id="menu-item-11749" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11749"><a href="https://www.jvs.org.uk/gardening-club/">Gardening Club</a></li>
+</ul></div>	</div><!-- .wrapper -->
+</nav><!-- #navigation -->
+
+<div id="mobile-navigation" class="font-family-3">
+	<span class="header-mobile-nav-hook"><span class="fa fa-reorder"></span>Navigation</span>
+	<span class="header-account-separator"></span>
+	<span class="header-mobile-search-hook"><span class="fa fa-search"></span>Search</span>
+	<div id="mobile-navigation-menu">
+			<div class="wrapper"><div class="menu-primary-container"><ul id="primary-menu-mobile" class="menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-136"><a href="https://www.jvs.org.uk/">Home</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-141"><a href="https://www.jvs.org.uk/about/">About</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33"><a href="https://www.jvs.org.uk/contact/">Contact</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-9829"><a href="https://www.jvs.org.uk/about-2/jobs/">Volunteering</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6024"><a href="https://www.jvs.org.uk/2017/04/04/what-we-do/">Who we are</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6016"><a href="https://www.jvs.org.uk/2017/04/04/trustees-and-staff/">The People Behind Our Mission</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6019"><a href="https://www.jvs.org.uk/2017/04/04/history-of-the-jvs/">History of JVS</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-post menu-item-6032"><a href="https://www.jvs.org.uk/2017/04/04/jvs-jerusalem-ginger-the-vegetarian-community-centre-in-jerusalem/">JVS Jerusalem / Ginger – the Vegetarian Community Centre in Jerusalem</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-6237"><a href="https://www.jvs.org.uk/recipes/">Recipes</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7988"><a href="https://www.jvs.org.uk/recipes-category/festival-cooking/">Festival Cooking</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7993"><a href="https://www.jvs.org.uk/recipes-category/main-courses/">Main Courses</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7989"><a href="https://www.jvs.org.uk/recipes-category/sides-and-snacks/">Sides &#038; snacks</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7990"><a href="https://www.jvs.org.uk/recipes-category/soups-and-salads/">Soups and Salads</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7991"><a href="https://www.jvs.org.uk/recipes-category/baking/">Baking</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-7992"><a href="https://www.jvs.org.uk/recipes-category/desserts/">Desserts</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-6087"><a href="https://patreon.com/user?u=84615181">Membership &#038; Donations</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-6088"><a href="https://www.patreon.com/user?u=84615181">Support us</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-9920"><a href="https://www.jvs.org.uk/membership/">Life Membership</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6073"><a href="https://www.jvs.org.uk/support-us/remember-the-jvs-in-your-will/">Remember the JVS in your Will</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-142"><a href="https://www.jvs.org.uk/resources/">Resources</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-6048"><a href="https://www.jvs.org.uk/why-vegetarian/judaism/">Why Vegan?</a>
+	<ul class="sub-menu">
+		<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6047"><a href="https://www.jvs.org.uk/why-vegetarian/judaism/">Judaism</a></li>
+		<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6043"><a href="https://www.jvs.org.uk/why-vegetarian/animals/">Animals</a></li>
+		<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6044"><a href="https://www.jvs.org.uk/why-vegetarian/environment/">Environment</a></li>
+		<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6045"><a href="https://www.jvs.org.uk/why-vegetarian/feeding-the-world/">Feeding the World</a></li>
+		<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6046"><a href="https://www.jvs.org.uk/why-vegetarian/health/">Health</a></li>
+	</ul>
+</li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8366"><a href="https://www.jvs.org.uk/jewish-veganism/">Jewish Veganism</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8492"><a href="https://www.jvs.org.uk/jvs-live-videos/">JVS Live Videos</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8431"><a href="https://www.jvs.org.uk/list-of-vegan-jewish-clergy/">List of vegan Jewish clergy</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6055"><a href="https://www.jvs.org.uk/festival-resource-packs/">Jewish festival packs</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8373"><a href="https://www.jvs.org.uk/being-jewish-and-vegan-faqs/">FAQs</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6049"><a href="https://www.jvs.org.uk/the-jewish-vegetarian-magazine/">The JVS Magazine</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-6054"><a href="https://www.jvs.org.uk/library-3/">Community Library</a>
+	<ul class="sub-menu">
+		<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6051"><a href="https://www.jvs.org.uk/articles/">Articles</a></li>
+	</ul>
+</li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6052"><a href="https://www.jvs.org.uk/how-to/">How to…</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6053"><a href="https://www.jvs.org.uk/veganoptionsatkoshercaterersbakeriesrestaurants/">Vegan options at caterers, bakeries, restaurants</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-6050"><a href="https://www.jvs.org.uk/videos/">Videos</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-7221"><a href="https://www.jvs.org.uk/venuehire/">Venue hire</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10309"><a href="https://www.jvs.org.uk/calendar/">Calendar</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-post menu-item-11748"><a href="https://www.jvs.org.uk/2025/04/30/donate-our-jvs-garden-fundraiser/">Donate: our JVS Garden Fundraiser</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11749"><a href="https://www.jvs.org.uk/gardening-club/">Gardening Club</a></li>
+</ul></div></div><!-- .wrapper -->
+		</div><!-- #mobile-navigation-menu -->	<div class="header-mobile-search">
+		<form role="search" method="get" class="search-form" action="https://www.jvs.org.uk/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form>	</div><!-- .header-mobile-search -->
+</div><!-- #mobile-navigation -->
+				
+			</div><!-- #header-inner -->
+				
+        </header><!-- #header -->
+
+		
+		
+		<div id="main" class="site-content">
+
+				
+	<div class="wrapper clearfix">
+	
+		<section id="content" class="col col-8">
+
+			<h2>Sorry, Nothing Found!</h2>
+			<p>The page you were looking for could not be found. Maybe try the search form below.</p>
+			<form role="search" method="get" class="search-form" action="https://www.jvs.org.uk/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form>
+		</section><!-- #content -->
+
+			<aside id="sidebar" class="col col-4 col-last">
+			</aside><!-- #sidebar -->
+
+	</div><!-- .wrapper -->
+
+			
+			
+		</div><!-- #main -->
+		
+		
+		<footer id="footer" class="site-footer">
+
+			
+			
+	
+	
+
+			
+	<div id="footer-bottom" data-mtst-selector="#footer-bottom" data-mtst-label="Footer Bottom" data-mtst-no-support="typography,border">
+		
+		<div class="wrapper clearfix">
+				
+			<div id="footer-copyright" class="font-family-3" data-mtst-selector="#footer-copyright" data-mtst-label="Footer Copyright" data-mtst-no-support="background,border,spacing">
+				© JVS | Charity no: 258581			</div><!-- #footer-copyright -->
+
+			<div id="footer-navigation" class="font-family-3" data-mtst-selector="#footer-navigation li a" data-mtst-label="Footer Copyright" data-mtst-no-support="background,border,spacing">
+				<div class="menu-footer-container"><ul id="footer-menu" class="menu"><li id="menu-item-10" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-10"><a href="/terms-conditions/">Terms and Conditions</a></li>
+</ul></div>			</div><!-- #footer-navigation -->
+
+		</div><!-- .wrapper -->
+
+	</div><!-- #footer-bottom -->
+
+
+		</footer><!-- #footer -->
+
+	</div><!-- #page -->
+
+	
+    <div class="font-family-3 side-panel">
+
+        <div class="side-panel-inner">
+
+            <div class="side-panel-left" data-mtst-selector=".side-panel-left a" data-mtst-label="Side Nav Items" data-mtst-no-support="background,border">
+                            </div><!-- .side-panel-left -->
+
+            <div class="side-panel-right" data-mtst-selector=".side-panel-right" data-mtst-label="Side Nav Title" data-mtst-no-support="background,border">
+                JVS: Jewish - Vegan - Sustainable            </div><!-- .side-panel-right -->
+
+        </div><!-- .sideb-panel-inner -->
+
+    </div><!-- .side-panel -->
+
+
+	<div class="cookmode-overlay"></div>
+<div class="cookmode">
+	<div class="cookmode-main"></div>
+	<div class="cookmode-bottom"></div>
+	<span class="font-family-3 cookmode-close"><span class="fa fa-close"></span> Close Cookmode</span>
+</div><!-- .cookmode -->
+    <div class="share-post-overlay">
+	<div class="share-post">
+		<div class="share-post-inner"><div class="text-align-center"><span class="fa fa-refresh fa-spin"></span></div></div>
+		<span class="font-family-3 share-post-close">X</span>
+	</div><!-- .share-post -->
+</div><!-- .share-post-overlay -->    
+    
+	<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"\/*"},{"not":{"href_matches":["\/wp-*.php","\/wp-admin\/*","\/wp-content\/uploads\/*","\/wp-content\/*","\/wp-content\/plugins\/*","\/wp-content\/themes\/meridian-recipes\/*","\/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<style type="text/css">.sidebar .widget-title { background-color: rgb(255, 246, 229); text-align: left; background-repeat: repeat; background-attachment: scroll; line-height: 46px; padding-left: 22px; padding-right: 22px; padding-top: 0px; padding-bottom: 0px; margin-bottom: 0px; font-family: Lato;  } .about-author-widget { padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; background-repeat: repeat; border-top-left-radius: 0px;  } </style><style type="text/css">@import url("//fonts.googleapis.com/css?family=Lato:400,100,300,700,900")</style><textarea style="display: none;" id="mtst-panel-animation-data"></textarea>	<script type='text/javascript'>
+		(function () {
+			var c = document.body.className;
+			c = c.replace(/woocommerce-no-js/, 'woocommerce-js');
+			document.body.className = c;
+		})();
+	</script>
+	<link rel='stylesheet' id='wc-stripe-blocks-checkout-style-css' href='https://www.jvs.org.uk/wp-content/plugins/woocommerce-gateway-stripe/build/upe-blocks.css?ver=4635277bd45d4ddad46d2d665fde59b3' type='text/css' media='all' />
+<link rel='stylesheet' id='wc-blocks-style-css' href='https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=wc-10.0.3' type='text/css' media='all' />
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/meridian-popup/js/plugins.js?ver=1.0.1" id="meridian-popup-plugins-js-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/meridian-popup/js/main.js?ver=1.0.1" id="meridian-popup-main-js-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/meridian-promo-bar/js/plugins.js?ver=1.0" id="meridian-promo-bar-plugins-js-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/meridian-promo-bar/js/main.js?ver=1.0" id="meridian-promo-bar-main-js-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/meridian-styler/javascript/custom.js?ver=1.0.3" id="meridian-styler-js-custom-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-includes/js/jquery/ui/effect.min.js?ver=1.13.3" id="jquery-effects-core-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/themes/meridian-recipes/js/plugins.js?ver=1.7.5.5" id="meridian-recipes-plugins-js-js"></script>
+<script type="text/javascript" id="meridian-recipes-main-js-js-extra">
+/* <![CDATA[ */
+var MeridianVars = {"ajaxurl":"https:\/\/www.jvs.org.uk\/wp-admin\/admin-ajax.php","bookmarked_text":"bookmarked","bookmark_text":"bookmark"};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/themes/meridian-recipes/js/main.js?ver=1.7.5.5" id="meridian-recipes-main-js-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min.js?ver=10.0.3" id="sourcebuster-js-js"></script>
+<script type="text/javascript" id="wc-order-attribution-js-extra">
+/* <![CDATA[ */
+var wc_order_attribution = {"params":{"lifetime":1.0e-5,"session":30,"base64":false,"ajaxurl":"https:\/\/www.jvs.org.uk\/wp-admin\/admin-ajax.php","prefix":"wc_order_attribution_","allowTracking":true},"fields":{"source_type":"current.typ","referrer":"current_add.rf","utm_campaign":"current.cmp","utm_source":"current.src","utm_medium":"current.mdm","utm_content":"current.cnt","utm_id":"current.id","utm_term":"current.trm","utm_source_platform":"current.plt","utm_creative_format":"current.fmt","utm_marketing_tactic":"current.tct","session_entry":"current_add.ep","session_start_time":"current_add.fd","session_pages":"session.pgs","session_count":"udata.vst","user_agent":"udata.uag"}};
+/* ]]> */
+</script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/woocommerce/assets/js/frontend/order-attribution.min.js?ver=10.0.3" id="wc-order-attribution-js"></script>
+<script type="text/javascript" src="https://www.jvs.org.uk/wp-content/plugins/wp-smushit/app/assets/js/smush-lazy-load.min.js?ver=3.20.0" id="smush-lazy-load-js"></script>
+<!-- CAPTCHA added with CAPTCHA 4WP plugin. More information: https://captcha4wp.com -->			<script  id="c4wp-recaptcha-js" src="https://www.google.com/recaptcha/api.js?render=6LdiiuoqAAAAAGWyYCvbGAmPEki8e0JXCq9QB06t&#038;hl=en"></script>
+			<script id="c4wp-inline-js" type="text/javascript">
+				/* @v3-js:start */
+					let c4wp_onloadCallback = function() {
+						for ( var i = 0; i < document.forms.length; i++ ) {
+							let form 		   = document.forms[i];
+							let captcha_div    = form.querySelector( '.c4wp_captcha_field_div:not(.rendered)' );
+							let jetpack_sso    = form.querySelector( '#jetpack-sso-wrap' );
+							var wcblock_submit = form.querySelector( '.wc-block-components-checkout-place-order-button' );
+							var has_wc_submit  = null !== wcblock_submit;
+							
+							if ( null === captcha_div && ! has_wc_submit || form.id == 'create-group-form' ) {	
+								if ( ! form.parentElement.classList.contains( 'nf-form-layout' ) ) {
+									continue;
+								}
+							
+							}
+							if ( ! has_wc_submit ) {
+								if ( !( captcha_div.offsetWidth || captcha_div.offsetHeight || captcha_div.getClientRects().length ) ) {					    	
+									if ( jetpack_sso == null && ! form.classList.contains( 'woocommerce-form-login' ) ) {
+										continue;
+									}
+								}
+							}
+
+							let alreadyCloned = form.querySelector( '.c4wp-submit' );
+							if ( null != alreadyCloned ) {
+								continue;
+							}
+
+							let foundSubmitBtn = form.querySelector( '#signup-form [type=submit], [type=submit]:not(#group-creation-create):not([name="signup_submit"]):not([name="ac_form_submit"]):not(.verify-captcha)' );
+							let cloned = false;
+							let clone  = false;
+
+							// Submit button found, clone it.
+							if ( foundSubmitBtn ) {
+								clone = foundSubmitBtn.cloneNode(true);
+								clone.classList.add( 'c4wp-submit' );
+								clone.removeAttribute( 'onclick' );
+								clone.removeAttribute( 'onkeypress' );
+								if ( foundSubmitBtn.parentElement.form === null ) {
+									foundSubmitBtn.parentElement.prepend(clone);
+								} else {
+									foundSubmitBtn.parentElement.insertBefore( clone, foundSubmitBtn );
+								}
+								foundSubmitBtn.style.display = "none";
+								captcha_div                  = form.querySelector( '.c4wp_captcha_field_div' );
+								cloned = true;
+							}
+
+							// WC block checkout clone btn.
+							if ( has_wc_submit && ! form.classList.contains( 'c4wp-primed' ) ) {
+								clone = wcblock_submit.cloneNode(true);
+								clone.classList.add( 'c4wp-submit' );
+								clone.classList.add( 'c4wp-clone' );
+								clone.removeAttribute( 'onclick' );
+								clone.removeAttribute( 'onkeypress' );
+								if ( wcblock_submit.parentElement.form === null ) {
+									wcblock_submit.parentElement.prepend(clone);
+								} else {
+									wcblock_submit.parentElement.insertBefore( clone, wcblock_submit );
+								}
+								wcblock_submit.style.display = "none";
+
+								clone.addEventListener('click', function( e ){
+									if ( form.classList.contains( 'c4wp_v2_fallback_active' ) ) {
+										jQuery( form ).find( '.wc-block-components-checkout-place-order-button:not(.c4wp-submit)' ).click(); 
+										return true;
+									} else {
+										grecaptcha.execute( '6LdiiuoqAAAAAGWyYCvbGAmPEki8e0JXCq9QB06t', ).then( function( data ) {
+											form.classList.add( 'c4wp-primed' );
+										});	
+									}
+
+								});
+								foundSubmitBtn = wcblock_submit;
+								cloned = true;
+							}
+							
+							// Clone created, listen to its click.
+							if ( cloned ) {
+								clone.addEventListener( 'click', function ( event ) {
+									logSubmit( event, 'cloned', form, foundSubmitBtn );
+								});
+							// No clone, execute and watch for form submission.
+							} else {
+								grecaptcha.execute(
+									'6LdiiuoqAAAAAGWyYCvbGAmPEki8e0JXCq9QB06t',
+								).then( function( data ) {
+									var responseElem = form.querySelector( '.c4wp_response' );
+									if ( responseElem == null ) {
+										var responseElem = document.querySelector( '.c4wp_response' );
+									}
+									if ( responseElem != null ) {
+										responseElem.setAttribute( 'value', data );	
+									}									
+								});
+
+								// Anything else.
+								form.addEventListener( 'submit', function ( event ) {
+									logSubmit( event, 'other', form );
+								});	
+							}
+
+							function logSubmit( event, form_type = '', form, foundSubmitBtn ) {
+								// Standard v3 check.
+								if ( ! form.classList.contains( 'c4wp_v2_fallback_active' ) && ! form.classList.contains( 'c4wp_verified' ) ) {
+									event.preventDefault();
+									try {
+										grecaptcha.execute(
+											'6LdiiuoqAAAAAGWyYCvbGAmPEki8e0JXCq9QB06t',
+										).then( function( data ) {	
+											var responseElem = form.querySelector( '.c4wp_response' );
+											if ( responseElem == null ) {
+												var responseElem = document.querySelector( '.c4wp_response' );
+											}
+											
+											responseElem.setAttribute( 'value', data );	
+
+											if ( form.classList.contains( 'wc-block-checkout__form' ) ) {
+												// WC block checkout.
+												let input = document.querySelector('input[id*="c4wp-wc-checkout"]'); 
+												let lastValue = input.value;
+												var token = data;
+												input.value = token;
+												let event = new Event('input', { bubbles: true });
+												event.simulated = true;
+												let tracker = input._valueTracker;
+												if (tracker) {
+													tracker.setValue( lastValue );
+												}
+												input.dispatchEvent(event)												
+											}
+
+														
+			/* @v3-fallback-js:start */
+			if ( typeof captcha_div == 'undefined' && form.classList.contains( 'wc-block-checkout__form' ) ) {
+				var captcha_div = form.querySelector( '#additional-information-c4wp-c4wp-wc-checkout' );
+			}
+
+			if ( ! captcha_div && form.classList.contains( 'wc-block-checkout__form' ) ) {
+				var captcha_div = form.querySelector( '#order-c4wp-c4wp-wc-checkout' );
+			}
+
+			if ( typeof captcha_div == 'undefined' ) {
+				var captcha_div = form.querySelector( '.c4wp_captcha_field_div' );
+			}
+
+			var parentElem = captcha_div.parentElement;
+
+			if ( ( form.classList.contains( 'c4wp-primed' ) ) || ( ! form.classList.contains( 'c4wp_verify_underway' ) && captcha_div.parentElement.getAttribute( 'data-c4wp-use-ajax' ) == 'true' ) ) {
+
+				form.classList.add('c4wp_verify_underway' );
+				const flagMarkup =  '<input id="c4wp_ajax_flag" type="hidden" name="c4wp_ajax_flag" value="c4wp_ajax_flag">';
+				var flagMarkupDiv = document.createElement('div');
+				flagMarkupDiv.innerHTML = flagMarkup.trim();
+
+				form.appendChild( flagMarkupDiv );
+	
+				var nonce = captcha_div.parentElement.getAttribute( 'data-nonce' );
+
+				var formData = new FormData();
+
+				formData.append( 'action', 'c4wp_ajax_verify' );
+				formData.append( 'nonce', nonce );
+				formData.append( 'response', data );
+				
+				fetch( 'https://www.jvs.org.uk/wp-admin/admin-ajax.php', {
+					method: 'POST',
+					body: formData,
+				} ) // wrapped
+					.then( 
+						res => res.json()
+					)
+					.then( data => {
+						if ( data['success'] ) {
+							form.classList.add( 'c4wp_verified' );
+							// Submit as usual.
+							if ( foundSubmitBtn ) {
+								foundSubmitBtn.click();
+							} else if ( form.classList.contains( 'wc-block-checkout__form' ) ) {
+								jQuery( form ).find( '.wc-block-components-checkout-place-order-button:not(.c4wp-submit)' ).click(); 
+							} else {								
+								if ( typeof form.submit === 'function' ) {
+									form.submit();
+								} else {
+									HTMLFormElement.prototype.submit.call(form);
+								}
+							}
+
+						} else {
+							//jQuery( '.nf-form-cont' ).trigger( 'nfFormReady' );
+
+							if ( 'redirect' === 'v2_checkbox' ) {
+								window.location.href = '';
+							}
+
+							if ( 'v2_checkbox' === 'v2_checkbox' ) {
+								if ( form.classList.contains( 'wc-block-checkout__form' ) ) {
+									captcha_div = captcha_div.parentElement;
+								}
+
+								captcha_div.innerHTML = '';
+								form.classList.add( 'c4wp_v2_fallback_active' );
+								flagMarkupDiv.firstChild.setAttribute( 'name', 'c4wp_v2_fallback' );
+
+								var c4wp_captcha = grecaptcha.render( captcha_div,{
+									'sitekey' : '6LcrKxwUAAAAALfdkVWAIl89bFhZKj4TX8yh8OKg',		
+									'size'  : 'normal',
+									'theme' : 'light',				
+									'expired-callback' : function(){
+										grecaptcha.reset( c4wp_captcha );
+									}
+								}); 
+								jQuery( '.ninja-forms-field.c4wp-submit' ).prop( 'disabled', false );
+							}
+
+							if ( form.classList.contains( 'wc-block-checkout__form' ) ) {
+								return true;
+							}
+
+							if ( form.parentElement.classList.contains( 'nf-form-layout' ) ) {
+								jQuery( '.ninja-forms-field.c4wp-submit' ).prop( 'disabled', false );
+								return false;
+							}
+
+							// Prevent further submission
+							event.preventDefault();
+							return false;
+						}
+					} )
+					.catch( err => console.error( err ) );
+
+				// Prevent further submission
+				event.preventDefault();
+				return false;
+			}
+			/* @v3-fallback-js:end */
+			
+			
+											// Submit as usual.
+											if ( foundSubmitBtn ) {
+												foundSubmitBtn.click();
+											} else if ( form.classList.contains( 'wc-block-checkout__form' ) ) {
+												jQuery( form ).find( '.wc-block-components-checkout-place-order-button:not(.c4wp-submit)' ).click(); 
+											} else {
+												
+												if ( typeof form.submit === 'function' ) {
+													form.submit();
+												} else {
+													HTMLFormElement.prototype.submit.call(form);
+												}
+											}
+
+											return true;
+										});
+									} catch (e) {
+										// Silence.
+									}
+								// V2 fallback.
+								} else {
+									if ( form.classList.contains( 'wpforms-form' ) || form.classList.contains( 'frm-fluent-form' ) || form.classList.contains( 'woocommerce-checkout' ) ) {
+										return true;
+									}
+
+									if ( form.parentElement.classList.contains( 'nf-form-layout' ) ) {
+										return false;
+									}
+									
+									if ( form.classList.contains( 'wc-block-checkout__form' ) ) {
+										return;
+									}
+									
+									// Submit as usual.
+									if ( typeof form.submit === 'function' ) {
+										form.submit();
+									} else {
+										HTMLFormElement.prototype.submit.call(form);
+									}
+
+									return true;
+								}
+							};
+						}
+					};
+
+					grecaptcha.ready( c4wp_onloadCallback );
+
+					if ( typeof jQuery !== 'undefined' ) {
+						jQuery( 'body' ).on( 'click', '.acomment-reply.bp-primary-action', function ( e ) {
+							c4wp_onloadCallback();
+						});	
+					}
+
+					//token is valid for 2 minutes, So get new token every after 1 minutes 50 seconds
+					setInterval(c4wp_onloadCallback, 110000);
+
+					
+					window.addEventListener("load", (event) => {
+						if ( typeof jQuery !== 'undefined' && jQuery( 'input[id*="c4wp-wc-checkout"]' ).length ) {
+							var element = document.createElement('div');
+							var html = '<div class="c4wp_captcha_field" style="margin-bottom: 10px" data-nonce="cb03cc8b4d" data-c4wp-use-ajax="true" data-c4wp-v2-site-key="6LcrKxwUAAAAALfdkVWAIl89bFhZKj4TX8yh8OKg"><div id="c4wp_captcha_field_0" class="c4wp_captcha_field_div"><input type="hidden" name="g-recaptcha-response" class="c4wp_response" aria-label="do not use" aria-readonly="true" value="" /></div></div>';
+							element.innerHTML = html;
+							jQuery( '[class*="c4wp-wc-checkout"]' ).append( element );
+							jQuery( '[class*="c4wp-wc-checkout"]' ).find('*').off();
+							c4wp_onloadCallback();
+						}
+					});
+				/* @v3-js:end */
+			</script>
+			<!-- / CAPTCHA by CAPTCHA 4WP plugin -->
+</body>
+</html>

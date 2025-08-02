@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
+  env: {
+    WP_GRAPHQL_URL: process.env.WP_GRAPHQL_URL || 'https://jvs.org.uk/graphql',
+  },
 };
 
 export default nextConfig;
