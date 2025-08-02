@@ -13,6 +13,9 @@
     "setup:email": "npx wrangler kv key put MAILGUN_API_KEY \"YOUR_MAILGUN_API_KEY\" --binding=JVS_SECRETS --env=production",
     "scrape:magazines": "node scripts/scrape-magazines.js",
     "magazine:setup": "npx wrangler d1 execute jvs-magazine-db --file=./d1-magazine-schema.sql --remote",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "test:magazines": "node scripts/test-magazine-system.js"
   },
   "dependencies": {
@@ -38,11 +41,17 @@
     "@cloudflare/next-on-pages": "^1.13.12",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.2",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.25.0"
