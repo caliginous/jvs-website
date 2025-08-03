@@ -11,6 +11,7 @@
     "build:workers": "npx @cloudflare/next-on-pages",
     "deploy": "node deploy-email.js",
     "deploy:email": "node deploy-email.js",
+    "deploy:staging": "npm run build:minimal && npx @cloudflare/next-on-pages && wrangler deploy --env staging",
     "setup:email": "npx wrangler kv key put MAILGUN_API_KEY \"YOUR_MAILGUN_API_KEY\" --binding=JVS_SECRETS --env=production",
     "scrape:magazines": "node scripts/scrape-magazines.js",
     "magazine:setup": "npx wrangler d1 execute jvs-magazine-db --file=./d1-magazine-schema.sql --remote",

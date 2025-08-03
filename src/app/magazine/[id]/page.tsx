@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
-// Client component - no server-side exports needed
+// Edge Runtime for Cloudflare Pages
+export const runtime = 'edge';
 
 interface Magazine {
   id: string;
