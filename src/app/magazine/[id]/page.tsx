@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 
-export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
+// Client component - no server-side exports needed
 
 interface Magazine {
   id: string;

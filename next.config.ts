@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // Remove static export to allow dynamic features
   trailingSlash: true,
   images: {
     unoptimized: true,
