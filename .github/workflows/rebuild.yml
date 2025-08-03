@@ -31,8 +31,8 @@ jobs:
     - name: Install dependencies
       run: npm install
       
-    - name: Build Next.js site
-      run: npm run build
+    - name: Build Next.js site (minimal)
+      run: npm run build:minimal
       env:
         WP_GRAPHQL_URL: https://jvs.org.uk/graphql
         
