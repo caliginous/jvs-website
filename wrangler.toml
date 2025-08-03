@@ -56,11 +56,11 @@ name = "jvs-website-staging"
 
 [[env.staging.vars]]
 name = "WP_GRAPHQL_URL"
-value = "https://staging.jvs.org.uk/graphql"
+value = "https://jvs.org.uk/graphql"
 
 [[env.staging.vars]]
 name = "WP_API_URL"
-value = "https://staging.jvs.org.uk/wp-json"
+value = "https://jvs.org.uk/wp-json/wp/v2"
 
 [[env.staging.vars]]
 name = "WP_USERNAME"
