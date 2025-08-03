@@ -11,6 +11,8 @@ on:
         description: 'Reason for rebuild'
         required: false
         default: 'Content release'
+  repository_dispatch:
+    types: [wordpress_update]
 
 jobs:
   rebuild:
@@ -43,5 +45,10 @@ jobs:
       run: |
         echo "✅ JVS website rebuild completed successfully!"
         echo "🌐 Live at: https://jvs-website.dan-794.workers.dev"
-        echo "👤 Triggered by: ${{ github.event.inputs.user }}"
-        echo "📝 Reason: ${{ github.event.inputs.reason }}" 
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "👤 Triggered by: ${{ github.event.inputs.user }}"
+          echo "📝 Reason: ${{ github.event.inputs.reason }}"
+        else
+          echo "👤 Triggered by: WordPress content update"
+          echo "📝 Reason: Content deployment from WordPress"
+        fi 
