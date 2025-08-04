@@ -36,11 +36,14 @@ jobs:
       env:
         WP_GRAPHQL_URL: https://backend.jvs.org.uk/graphql
         
-    - name: Update Wrangler
-      run: npm install -g wrangler@latest
+    - name: Build Cloudflare Workers
+      run: npx @cloudflare/next-on-pages
+      
+    - name: Create assets ignore file
+      run: echo "_worker.js" > .vercel/output/static/.assetsignore
       
     - name: Deploy to Cloudflare Workers
-      run: wrangler deploy --env production
+      run: npx wrangler deploy --env production
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         

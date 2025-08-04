@@ -299,3 +299,23 @@ export const GET_RECIPE_BY_SLUG = gql`
     }
   }
 `; 
+
+export const HOMEPAGE_SETTINGS_QUERY = gql`
+  query HomepageSettings {
+    homepageSettings {
+      heroTitle
+      heroSubtitle
+      heroCtaPrimary
+      heroCtaSecondary
+      eventsSectionTitle
+      articlesSectionTitle
+      recipesSectionTitle
+      eventsCtaText
+      articlesCtaText
+      recipesCtaText
+      aboutSectionTitle
+      aboutSectionContent
+      aboutCtaText
+    }
+  }
+`;
