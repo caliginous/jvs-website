@@ -50,7 +50,7 @@ jobs:
         echo "Using Wrangler version:"
         wrangler --version
         echo "Deploying to production..."
-        wrangler deploy --env production
+        wrangler deploy --env production --compatibility-date 2024-07-20
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         
