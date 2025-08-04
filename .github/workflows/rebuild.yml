@@ -25,7 +25,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'npm'
         
     - name: Install dependencies
@@ -34,7 +34,7 @@ jobs:
     - name: Build Next.js site (minimal)
       run: npm run build:minimal
       env:
-        WP_GRAPHQL_URL: https://jvs.org.uk/graphql
+        WP_GRAPHQL_URL: https://backend.jvs.org.uk/graphql
         
     - name: Deploy to Cloudflare Workers
       run: npx wrangler deploy
