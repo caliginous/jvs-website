@@ -7,9 +7,6 @@ compatibility_flags = ["nodejs_compat"]
 # - Delegates all other routes to Next.js Pages adapter
 main = "worker.js"
 
-[assets]
-directory = ".vercel/output/static"
-
 [[d1_databases]]
 binding = "DB"
 database_name = "jvs-magazine-db"
@@ -17,9 +14,6 @@ database_id = "2b2ca51b-2571-486a-b569-d595f75f9fd8"
 
 [env.production]
 name = "jvs-website"
-
-[env.production.assets]
-directory = ".vercel/output/static"
 
 # KV Namespace for storing sensitive data like Stripe keys
 [[env.production.kv_namespaces]]
