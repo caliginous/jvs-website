@@ -36,6 +36,9 @@ jobs:
       env:
         WP_GRAPHQL_URL: https://backend.jvs.org.uk/graphql
         
+    - name: Update Wrangler
+      run: npm install -g wrangler@latest
+      
     - name: Deploy to Cloudflare Workers
       run: wrangler deploy --env production
       env:
