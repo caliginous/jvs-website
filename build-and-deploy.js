@@ -74,7 +74,7 @@ async function buildAndDeploy() {
     logs.push('☁️ Step 3: Deploying to Cloudflare Workers...');
     console.log('Step 3: Deploying to Cloudflare Workers...');
     
-    execSync('wrangler deploy --env production', { stdio: 'inherit' });
+    execSync('wrangler deploy', { stdio: 'inherit' });
     logs.push('✅ Deployed to Cloudflare Workers successfully');
     
     const endTime = Date.now();
