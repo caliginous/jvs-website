@@ -8,7 +8,7 @@ compatibility_flags = ["nodejs_compat"]
 main = "worker.js"
 
 [assets]
-directory = "out"
+directory = ".vercel/output/static"
 
 [[d1_databases]]
 binding = "DB"
@@ -19,7 +19,7 @@ database_id = "2b2ca51b-2571-486a-b569-d595f75f9fd8"
 name = "jvs-website"
 
 [env.production.assets]
-directory = "out"
+directory = ".vercel/output/static"
 
 # KV Namespace for storing sensitive data like Stripe keys
 [[env.production.kv_namespaces]]
@@ -32,10 +32,10 @@ database_name = "jvs-magazine-db"
 database_id = "2b2ca51b-2571-486a-b569-d595f75f9fd8"
 
 [[env.production.vars]]
-WP_GRAPHQL_URL = "https://jvs.org.uk/graphql"
+WP_GRAPHQL_URL = "https://backend.jvs.org.uk/graphql"
 
 [[env.production.vars]]
-WP_API_URL = "https://jvs.org.uk/wp-json/wp/v2"
+WP_API_URL = "https://backend.jvs.org.uk/wp-json/wp/v2"
 
 [[env.production.vars]]
 WP_USERNAME = "your_wordpress_username"
@@ -56,11 +56,11 @@ name = "jvs-website-staging"
 
 [[env.staging.vars]]
 name = "WP_GRAPHQL_URL"
-value = "https://jvs.org.uk/graphql"
+value = "https://backend.jvs.org.uk/graphql"
 
 [[env.staging.vars]]
 name = "WP_API_URL"
-value = "https://jvs.org.uk/wp-json/wp/v2"
+value = "https://backend.jvs.org.uk/wp-json/wp/v2"
 
 [[env.staging.vars]]
 name = "WP_USERNAME"
