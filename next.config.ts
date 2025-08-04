@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   env: {
-    WP_GRAPHQL_URL: process.env.WP_GRAPHQL_URL || 'https://jvs.org.uk/graphql',
+    WP_GRAPHQL_URL: process.env.WP_GRAPHQL_URL || 'https://backend.jvs.org.uk/graphql',
   },
 };
 

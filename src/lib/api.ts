@@ -4,7 +4,7 @@ declare const ARTICLES_CACHE: {
   put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
 };
 
-const API_URL = process.env.WP_GRAPHQL_URL || 'https://jvs.org.uk/graphql';
+const API_URL = process.env.WP_GRAPHQL_URL || 'https://backend.jvs.org.uk/graphql';
 
 async function fetchFromGraphQL(query: string, variables: Record<string, unknown> = {}) {
   const response = await fetch(API_URL, {

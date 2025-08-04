@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     
     // Get WordPress site URL from environment
-    const wpUrl = process.env.WP_GRAPHQL_URL?.replace('/graphql', '') || 'https://jvs.org.uk';
+    const wpUrl = process.env.WP_GRAPHQL_URL?.replace('/graphql', '') || 'https://backend.jvs.org.uk';
     const checkoutUrl = `${wpUrl}/checkout`;
     
     console.log('Proxying checkout request to:', checkoutUrl);

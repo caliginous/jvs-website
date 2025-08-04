@@ -87,7 +87,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const formattedDate = formatDate(article.date);
   const cleanExcerpt = article.excerpt ? stripHtml(article.excerpt) : '';
-  const currentUrl = `https://jvs.org.uk/articles/${slug}`;
+      const currentUrl = `/articles/${slug}`;
 
   return (
     <div className="min-h-screen bg-neutral-50">

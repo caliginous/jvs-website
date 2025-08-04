@@ -2,7 +2,7 @@ export const runtime = "edge";
 
 export async function GET() {
   try {
-    const res = await fetch("https://jvs.org.uk/graphql", {
+    const res = await fetch("https://backend.jvs.org.uk/graphql", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: "{ __typename }" })

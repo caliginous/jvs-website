@@ -16,7 +16,7 @@ async function getArticles() {
     while (hasNextPage && pageCount < 50) { // Safety limit of 50 pages
       console.log(`Fetching page ${pageCount + 1}...`);
       
-      const response = await fetch('https://jvs.org.uk/graphql', {
+      const response = await fetch('https://backend.jvs.org.uk/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

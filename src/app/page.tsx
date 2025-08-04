@@ -11,7 +11,7 @@ import { decodeHtmlEntities } from '@/lib/utils';
 // Fetch homepage data from WordPress GraphQL at build time
 async function getHomepageData() {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ async function getHomepageData() {
 // Fetch hero content from WordPress GraphQL at build time
 async function getHeroContent() {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ async function getHeroContent() {
 // Fetch about page content from WordPress GraphQL at build time
 async function getAboutPageContent() {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ async function getAboutPageContent() {
 // Fetch upcoming events from WordPress GraphQL at build time
 async function getUpcomingEvents(): Promise<EventProduct[]> {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ async function getUpcomingEvents(): Promise<EventProduct[]> {
 // Fetch latest recipes from WordPress GraphQL at build time
 async function getLatestRecipes(): Promise<Recipe[]> {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

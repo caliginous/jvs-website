@@ -14,7 +14,7 @@ function isUpcoming(dateString: string): boolean {
 // Fetch events at build time
 async function getEvents(): Promise<EventProduct[]> {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

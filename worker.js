@@ -166,7 +166,7 @@ async function handleGraphQLAPI(request, env) {
     const body = await request.json();
     
     // Forward the request to the WordPress GraphQL endpoint
-    const wpGraphQLUrl = 'https://jvs.org.uk/graphql';
+    const wpGraphQLUrl = 'https://backend.jvs.org.uk/graphql';
     
     console.log('🔍 [GRAPHQL API] Forwarding request to WordPress GraphQL');
     
@@ -247,7 +247,7 @@ async function handleTicketsRoute(request, env) {
       }
     `;
     
-    const graphqlResponse = await fetch('https://jvs.org.uk/graphql', {
+    const graphqlResponse = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -762,7 +762,7 @@ async function handleUnifiedEventRoute(request, env) {
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
     
     try {
-      const graphqlResponse = await fetch('https://jvs.org.uk/graphql', {
+      const graphqlResponse = await fetch('https://backend.jvs.org.uk/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

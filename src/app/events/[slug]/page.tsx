@@ -28,7 +28,7 @@ function formatDate(dateString: string): string {
 
 async function getEvent(slug: string): Promise<EventProduct | null> {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ async function getEvent(slug: string): Promise<EventProduct | null> {
 export async function generateStaticParams() {
   try {
     // Get all WooCommerce event products
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -14,7 +14,7 @@ import type { EventProduct } from '@/lib/types';
 
 async function getEvent(slug: string): Promise<EventProduct | null> {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

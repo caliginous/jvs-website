@@ -31,7 +31,7 @@ function decodeHtmlEntities(text: string): string {
 // Generate static params for all recipes
 export async function generateStaticParams() {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export async function generateStaticParams() {
 // Get individual recipe data
 async function getRecipe(slug: string): Promise<Recipe | null> {
   try {
-    const response = await fetch('https://jvs.org.uk/graphql', {
+    const response = await fetch('https://backend.jvs.org.uk/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

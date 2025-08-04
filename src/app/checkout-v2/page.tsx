@@ -94,7 +94,7 @@ function CheckoutV2Content() {
       await refetchCart();
 
       // Redirect to WooCommerce checkout
-      window.location.href = 'https://jvs.org.uk/checkout/';
+              window.location.href = '/checkout/';
 
     } catch (error) {
       console.error('Error adding to cart:', error);

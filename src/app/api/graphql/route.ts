@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     // Forward the request to the WordPress GraphQL endpoint
-    const wpGraphQLUrl = 'https://jvs.org.uk/graphql';
+    const wpGraphQLUrl = 'https://backend.jvs.org.uk/graphql';
     
     const response = await fetch(wpGraphQLUrl, {
       method: 'POST',
