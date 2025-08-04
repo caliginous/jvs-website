@@ -42,6 +42,9 @@ jobs:
     - name: Create assets ignore file
       run: echo "_worker.js" > .vercel/output/static/.assetsignore
       
+    - name: Update Wrangler
+      run: npm install -g wrangler@latest
+      
     - name: Deploy to Cloudflare Workers
       run: npx wrangler deploy --env production
       env:
