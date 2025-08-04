@@ -221,6 +221,11 @@ export default async function HomePage() {
   console.log('🔍 [HOMEPAGE] eventsSectionTitle:', eventsSectionTitle);
   console.log('🔍 [HOMEPAGE] articlesSectionTitle:', articlesSectionTitle);
   console.log('🔍 [HOMEPAGE] recipesSectionTitle:', recipesSectionTitle);
+  console.log('🔍 [HOMEPAGE] aboutSectionTitle:', aboutSectionTitle);
+  console.log('🔍 [HOMEPAGE] aboutSectionContent:', aboutSectionContent);
+  console.log('🔍 [HOMEPAGE] aboutCtaText:', aboutCtaText);
+  console.log('🔍 [HOMEPAGE] homepageSettings?.aboutSectionTitle:', homepageSettings?.aboutSectionTitle);
+  console.log('🔍 [HOMEPAGE] aboutContent?.title:', aboutContent?.title);
 
   return (
     <div className="min-h-screen bg-neutral-50">
