@@ -48,9 +48,9 @@ jobs:
     - name: Deploy to Cloudflare Workers
       run: |
         echo "Using Wrangler version:"
-        wrangler --version
+        /usr/local/bin/wrangler --version
         echo "Deploying to production..."
-        wrangler deploy --env production
+        /usr/local/bin/wrangler deploy --env production --compatibility-date 2024-07-20
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         
