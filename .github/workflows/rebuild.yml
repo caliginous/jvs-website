@@ -40,7 +40,15 @@ jobs:
       run: npx @cloudflare/next-on-pages
       
     - name: Create assets ignore file
-      run: echo "_worker.js" > .vercel/output/static/.assetsignore
+      run: |
+        cat > .vercel/output/static/.assetsignore << 'EOF'
+        _worker.js
+        *.html
+        *.rsc
+        *.rsc.json
+        _headers
+        _routes.json
+        EOF
       
     - name: Update Wrangler
       run: npm install -g wrangler@latest
