@@ -49,13 +49,10 @@ jobs:
       run: |
         echo "Using Wrangler version:"
         wrangler --version
-        echo "Disabling telemetry..."
-        export WRANGLER_TELEMETRY_DISABLED=1
         echo "Deploying to production..."
-        wrangler deploy --env production --compatibility-date 2024-07-20 --no-bundle
+        wrangler deploy --env production
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        WRANGLER_TELEMETRY_DISABLED: 1
         
     - name: Notify completion
       run: |
