@@ -67,19 +67,8 @@ export default {
       return await handleMagazineDetailPage(request, env);
     }
     
-    // For all other routes, delegate to the Next.js Pages adapter
-    console.log('📄 [CUSTOM WORKER] Delegating to Next.js Pages adapter');
-    
-    try {
-      const nextOnPagesWorker = await import('./.vercel/output/static/_worker.js/index.js');
-      if (nextOnPagesWorker && nextOnPagesWorker.default) {
-        return nextOnPagesWorker.default.fetch(request, env, ctx);
-      }
-    } catch (error) {
-      console.error('❌ [CUSTOM WORKER] Failed to load Next.js Pages adapter:', error);
-      return new Response('Internal Server Error', { status: 500 });
-    }
-    
+    // For all other routes, return a 404 for now
+    console.log('📄 [CUSTOM WORKER] Route not handled, returning 404');
     return new Response('Not Found', { status: 404 });
   }
 };
