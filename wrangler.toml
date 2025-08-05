@@ -54,6 +54,11 @@ NEXT_PUBLIC_UNIFIED_EVENTS = "true"
 [env.staging]
 name = "jvs-website-staging"
 
+# KV Namespace for storing sensitive data in staging
+[[env.staging.kv_namespaces]]
+binding = "JVS_SECRETS"
+id = "7628564cb1e947908e46a7a47373c23b"
+
 [[env.staging.vars]]
 name = "WP_GRAPHQL_URL"
 value = "https://backend.jvs.org.uk/graphql"

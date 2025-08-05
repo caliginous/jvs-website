@@ -3,7 +3,7 @@ import { sendEmailViaMailgun } from '@/lib/email';
 
 export const runtime = 'edge';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params: any }) {
   try {
     const body = await request.json();
     const { name, email, subject, message } = body;
@@ -31,6 +31,9 @@ ${message}
 This message was submitted via the JVS website contact form.
     `;
 
+    // Get environment from request context (Cloudflare Workers)
+    const env = (request as any).cf?.env || (globalThis as any).env;
+
     // Send email via Mailgun
     const emailResult = await sendEmailViaMailgun({
       from: name,
@@ -38,7 +41,7 @@ This message was submitted via the JVS website contact form.
       to: 'info@jvs.org.uk',
       subject: `JVS Contact Form: ${subject}`,
       text: emailContent,
-    });
+    }, env);
 
     if (!emailResult.success) {
       console.error('Failed to send contact form email:', emailResult.error);

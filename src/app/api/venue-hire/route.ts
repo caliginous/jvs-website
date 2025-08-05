@@ -3,7 +3,7 @@ import { sendEmailViaMailgun } from '@/lib/email';
 
 export const runtime = 'edge';
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params: any }) {
   try {
     const body = await request.json();
     const { name, organization, mobile, email, spaces, dates, times, message } = body;
@@ -37,6 +37,9 @@ This enquiry was submitted via the JVS website venue hire form.
 Please respond within 2 working days.
     `;
 
+    // Get environment from request context (Cloudflare Workers)
+    const env = (request as any).cf?.env || (globalThis as any).env;
+
     // Send email via Mailgun
     const emailResult = await sendEmailViaMailgun({
       from: name,
@@ -44,7 +47,7 @@ Please respond within 2 working days.
       to: 'info@jvs.org.uk',
       subject: 'New Venue Hire Quote Request',
       text: emailContent,
-    });
+    }, env);
 
     if (!emailResult.success) {
       console.error('Failed to send venue hire email:', emailResult.error);

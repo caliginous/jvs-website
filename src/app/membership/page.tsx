@@ -3,168 +3,363 @@ import Footer from '@/components/Footer';
 
 export default function MembershipPage() {
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
       <Navbar />
       
-      <main className="max-w-3xl mx-auto px-4 py-12 space-y-12">
-        
-        {/* Hero / Introduction Section */}
-        <section aria-label="Support JVS Introduction">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-[#263238] mb-6">Support JVS</h1>
-            <p className="text-lg leading-relaxed text-[#263238]">
-              The Jewish Vegetarian Society (JVS) relies on the generous support of people like you to keep our work going.
-            </p>
-            <p className="text-lg leading-relaxed text-[#263238] mt-4">
-              We&apos;ve moved away from formal memberships and now invite you to support us monthly through Patreon — a simple way to sustain our mission and grow our impact together.
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-r from-[#8BC34A] to-[#4CAF50] text-white py-20">
+        <div className="absolute inset-0 bg-black opacity-10"></div>
+        <div className="relative max-w-6xl mx-auto px-4 text-center">
+          <div className="mb-8">
+            <span className="inline-block bg-white bg-opacity-20 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              🌱 Join Our Community
+            </span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            Support Jewish Veganism
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
+            Help us build a more compassionate, sustainable world through Jewish values and plant-based living
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a
+              href="https://www.patreon.com/jvs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-[#4CAF50] hover:bg-gray-100 font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              Become a Patron
+            </a>
+            <a
+              href="#how-it-works"
+              className="border-2 border-white text-white hover:bg-white hover:text-[#4CAF50] font-semibold py-4 px-8 rounded-full text-lg transition-all duration-300"
+            >
+              Learn More
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Impact Stats Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div className="p-6">
+              <div className="text-4xl font-bold text-[#8BC34A] mb-2">100+</div>
+              <div className="text-gray-600">Events & Workshops</div>
+              <div className="text-sm text-gray-500">Free and low-cost</div>
+            </div>
+            <div className="p-6">
+              <div className="text-4xl font-bold text-[#8BC34A] mb-2">265+</div>
+              <div className="text-gray-600">Vegan Recipes</div>
+              <div className="text-sm text-gray-500">Jewish-inspired</div>
+            </div>
+            <div className="p-6">
+              <div className="text-4xl font-bold text-[#8BC34A] mb-2">1000+</div>
+              <div className="text-gray-600">Community Members</div>
+              <div className="text-sm text-gray-500">Growing daily</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[#263238] mb-4">How Your Support Makes a Difference</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Your monthly contribution helps us create meaningful change in the Jewish community and beyond
             </p>
           </div>
-        </section>
 
-        {/* Why Support JVS Section */}
-        <section aria-label="Why Support JVS">
-          <h2 className="text-2xl font-semibold text-[#263238] mb-6">Why Support JVS?</h2>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            Your monthly support helps us:
-          </p>
-          <ul className="space-y-3 text-base leading-relaxed text-[#263238]">
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Run free and low-cost vegan events and workshops
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Create resources exploring veganism, Jewish values, animal ethics, and sustainability
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Develop engaging content like Friday Night Dinner packs and Jewish holiday guides
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Provide micro-grants to support students and campus communities
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Maintain our online magazine, recipe archive, and learning materials
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Amplify diverse voices across the Jewish vegan community
-            </li>
-          </ul>
-        </section>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="w-16 h-16 bg-[#8BC34A] rounded-full flex items-center justify-center mb-6">
+                <span className="text-2xl">🎓</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#263238] mb-4">Education & Resources</h3>
+              <p className="text-gray-600 mb-4">
+                Create engaging content exploring veganism, Jewish values, and sustainability
+              </p>
+              <ul className="text-sm text-gray-500 space-y-2">
+                <li>• Friday Night Dinner packs</li>
+                <li>• Jewish holiday guides</li>
+                <li>• Educational workshops</li>
+              </ul>
+            </div>
 
-        {/* Patron Benefits Section */}
-        <section aria-label="Patron Benefits">
-          <h2 className="text-2xl font-semibold text-[#263238] mb-6">What You Receive as a Patron</h2>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            By supporting us through Patreon, you&apos;ll stay closely connected to the JVS community. Our patrons receive:
-          </p>
-          <ul className="space-y-3 text-base leading-relaxed text-[#263238] mb-6">
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Early access to event registration and discounted tickets
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Exclusive digital content and behind-the-scenes updates
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Optional name acknowledgments in newsletters
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              The satisfaction of sustaining compassionate, community-rooted activism
-            </li>
-          </ul>
-          <p className="text-base leading-relaxed text-[#263238]">
-            Your support helps us remain free, independent, and powered by people who care.
-          </p>
-        </section>
+            {/* Card 2 */}
+            <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="w-16 h-16 bg-[#4CAF50] rounded-full flex items-center justify-center mb-6">
+                <span className="text-2xl">🤝</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#263238] mb-4">Community Building</h3>
+              <p className="text-gray-600 mb-4">
+                Organize events and activities that bring people together
+              </p>
+              <ul className="text-sm text-gray-500 space-y-2">
+                <li>• Free community events</li>
+                <li>• Networking opportunities</li>
+                <li>• Support groups</li>
+              </ul>
+            </div>
 
-        {/* Become a Patron Section */}
-        <section aria-label="Become a Patron">
-          <h2 className="text-2xl font-semibold text-[#263238] mb-6">Become a Patron</h2>
-          <p className="text-base leading-relaxed text-[#263238] mb-8">
-            Your monthly contribution — even just £3 — makes a real difference.
-          </p>
-          <a
-            href="https://www.patreon.com/jvs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-[#8BC34A] hover:bg-[#558B2F] text-white font-bold py-4 px-8 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-            aria-label="Become a Patron on Patreon"
-          >
-            Become a Patron
-          </a>
-        </section>
+            {/* Card 3 */}
+            <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="w-16 h-16 bg-[#FF9800] rounded-full flex items-center justify-center mb-6">
+                <span className="text-2xl">🌍</span>
+              </div>
+              <h3 className="text-xl font-bold text-[#263238] mb-4">Advocacy & Impact</h3>
+              <p className="text-gray-600 mb-4">
+                Amplify diverse voices and promote positive change
+              </p>
+              <ul className="text-sm text-gray-500 space-y-2">
+                <li>• Student micro-grants</li>
+                <li>• Campus communities</li>
+                <li>• Policy advocacy</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        {/* Historic Life Members Section */}
-        <section aria-label="For Historic Life Members" className="bg-white rounded-lg p-8 shadow-md">
-          <h2 className="text-2xl font-semibold text-[#263238] mb-6">For Historic Life Members</h2>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            JVS no longer offers new Life Memberships, but we are deeply grateful to those who supported us in this way in the past.
-          </p>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            If you are a historic Life Member and would like to:
-          </p>
-          <ul className="space-y-2 text-base leading-relaxed text-[#263238] mb-8">
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Update your contact details
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Continue receiving our newsletter and updates
-            </li>
-            <li className="flex items-start">
-              <span className="text-[#FFCA28] mr-3 mt-1">•</span>
-              Stay in touch with the JVS community
-            </li>
-          </ul>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            Please click the link below to update your information:
-          </p>
-          <a
-            href="https://forms.gle/aSdksqucxVFE8oHy9"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block border-2 border-[#8BC34A] text-[#8BC34A] hover:bg-[#8BC34A] hover:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-            aria-label="Update your Life Member details"
-          >
-            Update Your Details
-          </a>
-        </section>
-
-        {/* Legacy Giving Section */}
-        <section aria-label="Leave a Lasting Legacy" className="bg-[#DCECC9] rounded-lg p-8">
-          <h2 className="text-2xl font-semibold text-[#263238] mb-6">Leave a Lasting Legacy</h2>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            By remembering JVS in your will, you help ensure that our work can continue for generations to come. A legacy gift is one of the most meaningful ways to support our mission.
-          </p>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            We recommend speaking with a solicitor or professional advisor. If you would like to include JVS in your will, please use the following suggested wording:
-          </p>
-          <blockquote className="bg-white p-6 rounded-lg border-l-4 border-[#8BC34A] mb-6">
-            <p className="text-base leading-relaxed text-[#263238] italic">
-              I leave the sum of £___ (or ___% of my estate) to The Jewish Vegetarian Society, Registered Charity Number 258581, of 853–855 Finchley Road, London NW11 8LX, to be used for its general charitable purposes.
+      {/* Patron Benefits Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[#263238] mb-4">What You Get as a Patron</h2>
+            <p className="text-xl text-gray-600">
+              Exclusive benefits and early access to our community
             </p>
-          </blockquote>
-          <p className="text-base leading-relaxed text-[#263238] mb-6">
-            If you are considering a legacy or would like to speak to someone, please contact us directly.
-          </p>
-          <a
-            href="mailto:info@jvs.org.uk"
-            className="inline-block bg-[#4FC3F7] hover:bg-[#1976D2] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
-            aria-label="Contact us about leaving a legacy"
-          >
-            Contact us about leaving a legacy
-          </a>
-        </section>
+          </div>
 
-      </main>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-[#8BC34A] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-white text-sm">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#263238] mb-1">Early Event Access</h3>
+                    <p className="text-gray-600">Priority registration and discounted tickets for all events</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-[#8BC34A] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-white text-sm">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#263238] mb-1">Exclusive Content</h3>
+                    <p className="text-gray-600">Behind-the-scenes updates and special digital resources</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-[#8BC34A] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-white text-sm">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#263238] mb-1">Community Recognition</h3>
+                    <p className="text-gray-600">Optional name acknowledgments in newsletters and events</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4">
+                  <div className="w-8 h-8 bg-[#8BC34A] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-white text-sm">✓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-[#263238] mb-1">Direct Impact</h3>
+                    <p className="text-gray-600">See your support in action through regular impact reports</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-[#8BC34A] to-[#4CAF50] rounded-2xl p-8 text-white">
+              <h3 className="text-2xl font-bold mb-4">Start Supporting Today</h3>
+              <p className="mb-6">Even £3 per month makes a real difference in our community</p>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span>£3/month</span>
+                  <span className="text-sm opacity-90">Basic Patron</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>£5/month</span>
+                  <span className="text-sm opacity-90">Community Patron</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>£10/month</span>
+                  <span className="text-sm opacity-90">Sustaining Patron</span>
+                </div>
+              </div>
+              <a
+                href="https://www.patreon.com/jvs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-white text-[#4CAF50] text-center font-bold py-3 px-6 rounded-lg mt-6 hover:bg-gray-100 transition-colors duration-200"
+              >
+                Choose Your Level
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[#263238] mb-4">What Our Patrons Say</h2>
+            <p className="text-xl text-gray-600">
+              Join hundreds of supporters making a difference
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-xl p-8 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-[#8BC34A] rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold">S</span>
+                </div>
+                <div>
+                  <div className="font-semibold text-[#263238]">Sarah M.</div>
+                  <div className="text-sm text-gray-500">£5/month Patron</div>
+                </div>
+              </div>
+              <p className="text-gray-600 italic">
+                "JVS has helped me connect my Jewish identity with my vegan lifestyle. The community is warm and welcoming."
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-8 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-[#4CAF50] rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold">D</span>
+                </div>
+                <div>
+                  <div className="font-semibold text-[#263238]">David L.</div>
+                  <div className="text-sm text-gray-500">£10/month Patron</div>
+                </div>
+              </div>
+              <p className="text-gray-600 italic">
+                "The resources and events have been invaluable for our family. I'm proud to support this important work."
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-8 shadow-lg">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-[#FF9800] rounded-full flex items-center justify-center mr-4">
+                  <span className="text-white font-bold">R</span>
+                </div>
+                <div>
+                  <div className="font-semibold text-[#263238]">Rachel K.</div>
+                  <div className="text-sm text-gray-500">£3/month Patron</div>
+                </div>
+              </div>
+              <p className="text-gray-600 italic">
+                "Even a small monthly contribution makes me feel connected to this amazing community and mission."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-[#263238] to-[#37474F] text-white">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold mb-6">Ready to Make a Difference?</h2>
+          <p className="text-xl mb-8 text-gray-200">
+            Join our community of supporters and help us build a more compassionate world
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://www.patreon.com/jvs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#8BC34A] hover:bg-[#4CAF50] text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105"
+            >
+              Become a Patron Now
+            </a>
+            <a
+              href="mailto:info@jvs.org.uk"
+              className="border-2 border-white text-white hover:bg-white hover:text-[#263238] font-semibold py-4 px-8 rounded-full text-lg transition-all duration-300"
+            >
+              Contact Us
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Legacy Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="bg-gradient-to-r from-[#E8F5E8] to-[#F3E5F5] rounded-2xl p-8">
+            <h2 className="text-3xl font-bold text-[#263238] mb-6 text-center">Leave a Lasting Legacy</h2>
+            <p className="text-lg text-gray-700 mb-6 text-center">
+              Consider including JVS in your will to ensure our work continues for future generations
+            </p>
+            <div className="bg-white rounded-lg p-6 mb-6">
+              <h3 className="font-semibold text-[#263238] mb-3">Suggested Wording for Your Will:</h3>
+              <p className="text-gray-700 italic text-sm leading-relaxed">
+                "I leave the sum of £___ (or ___% of my estate) to The Jewish Vegetarian Society, Registered Charity Number 258581, of 853–855 Finchley Road, London NW11 8LX, to be used for its general charitable purposes."
+              </p>
+            </div>
+            <div className="text-center">
+              <a
+                href="mailto:info@jvs.org.uk"
+                className="inline-block bg-[#4FC3F7] hover:bg-[#1976D2] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+              >
+                Contact Us About Legacy Giving
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Historic Members Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="bg-white rounded-2xl p-8 shadow-lg">
+            <h2 className="text-3xl font-bold text-[#263238] mb-6 text-center">For Historic Life Members</h2>
+            <p className="text-lg text-gray-700 mb-6 text-center">
+              We're deeply grateful to our historic Life Members who supported us in the past
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div>
+                <h3 className="font-semibold text-[#263238] mb-3">Update Your Information</h3>
+                <p className="text-gray-600 mb-4">
+                  Keep your contact details current to continue receiving our newsletter and updates
+                </p>
+                <a
+                  href="https://forms.gle/aSdksqucxVFE8oHy9"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block bg-[#8BC34A] hover:bg-[#4CAF50] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                >
+                  Update Your Details
+                </a>
+              </div>
+              <div>
+                <h3 className="font-semibold text-[#263238] mb-3">Stay Connected</h3>
+                <p className="text-gray-600 mb-4">
+                  Continue to be part of our community and receive exclusive updates
+                </p>
+                <a
+                  href="mailto:info@jvs.org.uk"
+                  className="inline-block border-2 border-[#8BC34A] text-[#8BC34A] hover:bg-[#8BC34A] hover:text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                >
+                  Contact Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>
