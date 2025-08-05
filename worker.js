@@ -27,6 +27,18 @@ export default {
       return await handleGraphQLAPI(request, env);
     }
     
+    // Handle Contact API
+    if (url.pathname === '/api/contact' || url.pathname === '/api/contact/') {
+      console.log('📧 [CUSTOM WORKER] Handling contact API');
+      return await handleContactAPI(request, env);
+    }
+    
+    // Handle Venue Hire API
+    if (url.pathname === '/api/venue-hire' || url.pathname === '/api/venue-hire/') {
+      console.log('🏢 [CUSTOM WORKER] Handling venue hire API');
+      return await handleVenueHireAPI(request, env);
+    }
+    
     // Handle Magazine API routes
     if (url.pathname === '/api/list-magazines' || url.pathname === '/api/list-magazines/') {
       console.log('📚 [CUSTOM WORKER] Handling list-magazines API');
@@ -388,7 +400,7 @@ async function handleGraphQLAPI(request, env) {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
       }
     });
   } catch (error) {
@@ -400,6 +412,297 @@ async function handleGraphQLAPI(request, env) {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
+        }
+      }
+    );
+  }
+}
+
+async function handleContactAPI(request, env) {
+  try {
+    // Handle OPTIONS requests for CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+
+    // Only handle POST requests
+    if (request.method !== 'POST') {
+      return new Response(
+        JSON.stringify({ error: 'Method not allowed' }),
+        {
+          status: 405,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    // Parse the request body
+    const body = await request.json();
+    const { name, email, subject, message } = body;
+
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    // Create email content
+    const emailContent = `
+New Contact Form Submission
+
+Name: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+This message was submitted via the JVS website contact form.
+    `;
+
+    // Send email via Mailgun
+    const mailgunApiKey = await env.JVS_SECRETS.get('MAILGUN_API_KEY');
+    if (!mailgunApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'Email service not configured' }),
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    const formData = new FormData();
+    formData.append('from', `${name} <${email}>`);
+    formData.append('to', 'contact@jvs.org.uk');
+    formData.append('subject', `JVS Website Contact Form: ${subject}`);
+    formData.append('text', emailContent);
+
+    const mailgunResponse = await fetch('https://api.eu.mailgun.net/v3/jvs.org.uk/messages', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${btoa(`api:${mailgunApiKey}`)}`
+      },
+      body: formData
+    });
+
+    if (!mailgunResponse.ok) {
+      console.error('❌ [CONTACT API] Mailgun error:', await mailgunResponse.text());
+      return new Response(
+        JSON.stringify({ error: 'Failed to send email' }),
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    console.log('✅ [CONTACT API] Email sent successfully');
+
+    return new Response(
+      JSON.stringify({ message: 'Contact form submitted successfully' }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      }
+    );
+
+  } catch (error) {
+    console.error('❌ [CONTACT API] Error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to process contact form submission' }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      }
+    );
+  }
+}
+
+async function handleVenueHireAPI(request, env) {
+  try {
+    // Handle OPTIONS requests for CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+
+    // Only handle POST requests
+    if (request.method !== 'POST') {
+      return new Response(
+        JSON.stringify({ error: 'Method not allowed' }),
+        {
+          status: 405,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    // Parse the request body
+    const body = await request.json();
+    const { name, email, phone, eventDate, eventType, guestCount, message } = body;
+
+    // Validate required fields
+    if (!name || !email || !eventDate || !eventType || !guestCount) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    // Create email content
+    const emailContent = `
+New Venue Hire Request
+
+Name: ${name}
+Email: ${email}
+Phone: ${phone || 'Not provided'}
+Event Date: ${eventDate}
+Event Type: ${eventType}
+Guest Count: ${guestCount}
+
+Message:
+${message || 'No additional message provided'}
+
+---
+This request was submitted via the JVS website venue hire form.
+    `;
+
+    // Send email via Mailgun
+    const mailgunApiKey = await env.JVS_SECRETS.get('MAILGUN_API_KEY');
+    if (!mailgunApiKey) {
+      return new Response(
+        JSON.stringify({ error: 'Email service not configured' }),
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    const formData = new FormData();
+    formData.append('from', `${name} <${email}>`);
+    formData.append('to', 'venue@jvs.org.uk');
+    formData.append('subject', `JVS Venue Hire Request: ${eventType} on ${eventDate}`);
+    formData.append('text', emailContent);
+
+    const mailgunResponse = await fetch('https://api.eu.mailgun.net/v3/jvs.org.uk/messages', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${btoa(`api:${mailgunApiKey}`)}`
+      },
+      body: formData
+    });
+
+    if (!mailgunResponse.ok) {
+      console.error('❌ [VENUE HIRE API] Mailgun error:', await mailgunResponse.text());
+      return new Response(
+        JSON.stringify({ error: 'Failed to send email' }),
+        {
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+
+    console.log('✅ [VENUE HIRE API] Email sent successfully');
+
+    return new Response(
+      JSON.stringify({ message: 'Venue hire request submitted successfully' }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      }
+    );
+
+  } catch (error) {
+    console.error('❌ [VENUE HIRE API] Error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to process venue hire request' }),
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         }
       }
     );
