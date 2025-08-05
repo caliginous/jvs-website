@@ -15,6 +15,12 @@ export default {
       return await handleStripeConfig(request, env);
     }
     
+    // Handle create payment intent API
+    if (url.pathname === '/api/create-payment-intent' || url.pathname === '/api/create-payment-intent/') {
+      console.log('💳 [CUSTOM WORKER] Handling create payment intent API');
+      return await handleCreatePaymentIntent(request, env);
+    }
+    
     // Handle GraphQL API
     if (url.pathname === '/api/graphql' || url.pathname === '/api/graphql/') {
       console.log('🔍 [CUSTOM WORKER] Handling GraphQL API');
@@ -75,21 +81,46 @@ export default {
 
 async function handleStripeConfig(request, env) {
   try {
-    // Access the Stripe publishable key from the environment variables
-    // The environment variables are passed as numbered bindings (env.0, env.1, etc.)
+    // Handle OPTIONS requests for CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+
+    // Get Stripe publishable key from KV store (Cloudflare Workers) or environment variable (development)
     let publishableKey = null;
     
-    // Try to find the STRIPE_PUBLISHABLE_KEY in the environment bindings
-    for (let i = 0; i < 10; i++) {
-      const envVar = env[i];
-      if (envVar && typeof envVar === 'object' && envVar.STRIPE_PUBLISHABLE_KEY) {
-        publishableKey = envVar.STRIPE_PUBLISHABLE_KEY;
-        break;
+    // Try to get from KV store first
+    if (env.JVS_SECRETS) {
+      try {
+        publishableKey = await env.JVS_SECRETS.get('STRIPE_PUBLISHABLE_KEY');
+        console.log('✅ [STRIPE CONFIG] Retrieved publishable key from KV store');
+      } catch (error) {
+        console.log('⚠️ [STRIPE CONFIG] Could not retrieve from KV store:', error);
+      }
+    }
+    
+    // Fallback to environment variables (for development)
+    if (!publishableKey) {
+      // Try to find the STRIPE_PUBLISHABLE_KEY in the environment bindings
+      for (let i = 0; i < 10; i++) {
+        const envVar = env[i];
+        if (envVar && typeof envVar === 'object' && envVar.STRIPE_PUBLISHABLE_KEY) {
+          publishableKey = envVar.STRIPE_PUBLISHABLE_KEY;
+          console.log('✅ [STRIPE CONFIG] Retrieved publishable key from environment');
+          break;
+        }
       }
     }
     
     if (!publishableKey) {
-      console.error('❌ [STRIPE CONFIG] STRIPE_PUBLISHABLE_KEY not found in environment');
+      console.error('❌ [STRIPE CONFIG] STRIPE_PUBLISHABLE_KEY not found in KV store or environment');
       return new Response(
         JSON.stringify({ error: 'Stripe configuration not available' }),
         { 
@@ -114,7 +145,7 @@ async function handleStripeConfig(request, env) {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type'
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         }
       }
     );
@@ -133,8 +164,183 @@ async function handleStripeConfig(request, env) {
   }
 }
 
+async function handleCreatePaymentIntent(request, env) {
+  try {
+    // Handle OPTIONS requests for CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+
+    console.log('=== CREATE PAYMENT INTENT API START ===');
+    
+    // Get Stripe secret key from KV store
+    let secretKey = null;
+    if (env.JVS_SECRETS) {
+      try {
+        secretKey = await env.JVS_SECRETS.get('STRIPE_SECRET_KEY');
+        console.log('✅ [PAYMENT INTENT] Retrieved secret key from KV store');
+      } catch (error) {
+        console.log('⚠️ [PAYMENT INTENT] Could not retrieve secret key from KV store:', error);
+      }
+    }
+    
+    if (!secretKey) {
+      console.error('❌ [PAYMENT INTENT] No secret key found in KV store');
+      return new Response(
+        JSON.stringify({ error: 'Payment service not configured' }),
+        { 
+          status: 503,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+    
+    // Parse request body
+    const body = await request.json();
+    const { amount, currency = 'gbp', metadata, description } = body;
+    
+    // Validate required fields
+    if (!amount || typeof amount !== 'number' || amount <= 0) {
+      console.error('❌ [PAYMENT INTENT] Invalid amount:', amount);
+      return new Response(
+        JSON.stringify({ error: 'Invalid amount provided' }),
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+    
+    if (!currency || typeof currency !== 'string') {
+      console.error('❌ [PAYMENT INTENT] Invalid currency:', currency);
+      return new Response(
+        JSON.stringify({ error: 'Invalid currency provided' }),
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+    
+    console.log('✅ [PAYMENT INTENT] Creating payment intent:', {
+      amount,
+      currency,
+      metadata,
+      description
+    });
+    
+    // Create payment intent using Stripe API
+    const stripeResponse = await fetch('https://api.stripe.com/v1/payment_intents', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${secretKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Stripe-Version': '2024-12-18.acacia'
+      },
+      body: new URLSearchParams({
+        amount: Math.round(amount * 100).toString(), // Convert to cents
+        currency: currency.toLowerCase(),
+        description: description || 'JVS Event Ticket Purchase',
+        automatic_payment_methods: 'true',
+        ...(metadata && Object.keys(metadata).length > 0 && {
+          metadata: JSON.stringify(metadata)
+        })
+      })
+    });
+    
+    const paymentIntentData = await stripeResponse.json();
+    
+    if (!stripeResponse.ok) {
+      console.error('❌ [PAYMENT INTENT] Stripe API error:', paymentIntentData);
+      return new Response(
+        JSON.stringify({ error: 'Failed to create payment intent' }),
+        { 
+          status: 500,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          }
+        }
+      );
+    }
+    
+    console.log('✅ [PAYMENT INTENT] Payment intent created successfully:', paymentIntentData.id);
+    
+    // Return client secret (safe to send to frontend)
+    return new Response(
+      JSON.stringify({
+        clientSecret: paymentIntentData.client_secret,
+        paymentIntentId: paymentIntentData.id,
+        amount: paymentIntentData.amount,
+        currency: paymentIntentData.currency,
+        status: paymentIntentData.status
+      }),
+      { 
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      }
+    );
+    
+  } catch (error) {
+    console.error('❌ [PAYMENT INTENT] Error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to create payment intent' }),
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      }
+    );
+  }
+}
+
 async function handleGraphQLAPI(request, env) {
   try {
+    // Handle OPTIONS requests for CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        }
+      });
+    }
+
     // Only handle POST requests
     if (request.method !== 'POST') {
       return new Response(
@@ -145,7 +351,7 @@ async function handleGraphQLAPI(request, env) {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
           }
         }
       );
