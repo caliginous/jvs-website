@@ -1,0 +1,60 @@
+name: Rebuild JVS Website
+
+on:
+  workflow_dispatch:
+    inputs:
+      user:
+        description: 'User who triggered the rebuild'
+        required: true
+        default: 'webhook'
+      reason:
+        description: 'Reason for rebuild'
+        required: false
+        default: 'Content release'
+  repository_dispatch:
+    types: [wordpress_update]
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build Next.js site (minimal)
+      run: npm run build:minimal
+      env:
+        WP_GRAPHQL_URL: https://backend.jvs.org.uk/graphql
+        
+    - name: Build Cloudflare Workers
+      run: npx @cloudflare/next-on-pages
+      
+    - name: Create assets ignore file
+      run: echo "_worker.js" > .vercel/output/static/.assetsignore
+      
+    - name: Deploy to Cloudflare Workers
+      run: npx wrangler deploy --env production
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        
+    - name: Notify completion
+      run: |
+        echo "✅ JVS website rebuild completed successfully!"
+        echo "🌐 Live at: https://jvs-website.dan-794.workers.dev"
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "👤 Triggered by: ${{ github.event.inputs.user }}"
+          echo "📝 Reason: ${{ github.event.inputs.reason }}"
+        else
+          echo "👤 Triggered by: WordPress content update"
+          echo "📝 Reason: Content deployment from WordPress"
+        fi 
