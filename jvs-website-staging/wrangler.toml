@@ -39,47 +39,16 @@ NEXT_PUBLIC_UNIFIED_EVENTS = "true"
 MAILCHIMP_API_KEY = "e0e760a968f8a592f4236264d1929081-us4"
 MAILCHIMP_API_SERVER = "us4"
 MAILCHIMP_AUDIENCE_ID = "77ab04b46d"
-# MAILGUN_API_KEY is set as a secure secret via wrangler secret put
+MAILGUN_API_KEY = "YOUR_MAILGUN_API_KEY_HERE"
 
 [env.staging]
 name = "jvs-website-staging"
 
-<<<<<<< HEAD
-# Separate KV Namespace for staging secrets (completely isolated from production)
-=======
 # KV Namespace for storing sensitive data like Mailgun API key
->>>>>>> c63065bfe9b0c039c933217d0eb6ed91b7858bfd
 [[env.staging.kv_namespaces]]
 binding = "JVS_SECRETS"
-id = "1bc7206c38f64ed49ed6f5e1c594ad51"
+id = "7628564cb1e947908e46a7a47373c23b"
 
-<<<<<<< HEAD
-[[env.staging.vars]]
-name = "WP_GRAPHQL_URL"
-value = "https://backend.jvs.org.uk/graphql"
-
-[[env.staging.vars]]
-name = "WP_API_URL"
-value = "https://backend.jvs.org.uk/wp-json/wp/v2"
-
-[[env.staging.vars]]
-name = "WP_USERNAME"
-value = "your_wordpress_username"
-
-[[env.staging.vars]]
-name = "WP_PASSWORD"
-value = "your_wordpress_password"
-
-# Stripe Configuration - Test keys for staging
-[[env.staging.vars]]
-name = "STRIPE_PUBLISHABLE_KEY"
-value = "pk_test_51OqXXXXXXXXXXXXXXX" # TODO: Replace with actual Stripe test publishable key
-
-# Feature Flags
-[[env.staging.vars]]
-name = "NEXT_PUBLIC_UNIFIED_EVENTS"
-value = "true"
-=======
 [env.staging.vars]
 WP_GRAPHQL_URL = "https://backend.jvs.org.uk/graphql"
 WP_API_URL = "https://backend.jvs.org.uk/wp-json/wp/v2"
@@ -91,8 +60,7 @@ NEXT_PUBLIC_UNIFIED_EVENTS = "true"
 MAILCHIMP_API_KEY = "e0e760a968f8a592f4236264d1929081-us4"
 MAILCHIMP_API_SERVER = "us4"
 MAILCHIMP_AUDIENCE_ID = "77ab04b46d"
-# MAILGUN_API_KEY is set as a secure secret via wrangler secret put
->>>>>>> c63065bfe9b0c039c933217d0eb6ed91b7858bfd
+MAILGUN_API_KEY = "YOUR_MAILGUN_API_KEY_HERE"
 
 [[env.staging.d1_databases]]
 binding = "DB"
