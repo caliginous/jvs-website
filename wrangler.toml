@@ -54,10 +54,10 @@ NEXT_PUBLIC_UNIFIED_EVENTS = "true"
 [env.staging]
 name = "jvs-website-staging"
 
-# KV Namespace for storing sensitive data in staging
+# Separate KV Namespace for staging secrets (completely isolated from production)
 [[env.staging.kv_namespaces]]
 binding = "JVS_SECRETS"
-id = "7628564cb1e947908e46a7a47373c23b"
+id = "1bc7206c38f64ed49ed6f5e1c594ad51"
 
 [[env.staging.vars]]
 name = "WP_GRAPHQL_URL"
@@ -75,10 +75,10 @@ value = "your_wordpress_username"
 name = "WP_PASSWORD"
 value = "your_wordpress_password"
 
-# Stripe Configuration
+# Stripe Configuration - Test keys for staging
 [[env.staging.vars]]
 name = "STRIPE_PUBLISHABLE_KEY"
-value = "pk_test_XXXXXXXX" # TODO: Replace with actual Stripe test publishable key
+value = "pk_test_51OqXXXXXXXXXXXXXXX" # TODO: Replace with actual Stripe test publishable key
 
 # Feature Flags
 [[env.staging.vars]]
