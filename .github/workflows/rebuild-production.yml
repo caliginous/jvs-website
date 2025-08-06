@@ -1,0 +1,123 @@
+name: Rebuild JVS Website - Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      user:
+        description: 'User who triggered the rebuild'
+        required: true
+        default: 'manual'
+      reason:
+        description: 'Reason for rebuild'
+        required: false
+        default: 'Production deployment'
+      run_tests:
+        description: 'Run test suite before deployment'
+        required: false
+        default: 'true'
+        type: boolean
+
+jobs:
+  rebuild-production:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./jvs-website
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: './jvs-website/package-lock.json'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Install test dependencies (if running tests)
+      run: |
+        if [ "${{ github.event.inputs.run_tests }}" = "true" ]; then
+          echo "📦 Installing test dependencies..."
+          npm install puppeteer
+        fi
+        
+    - name: Clean build artifacts
+      run: |
+        echo "🧹 Cleaning build artifacts..."
+        rm -rf .vercel/output .next node_modules/.cache .swc .out || true
+        echo "✅ Clean completed"
+        
+    - name: Build Next.js site (clean minimal build)
+      run: |
+        echo "🏗️ Starting Next.js build..."
+        npm run build:minimal
+        echo "✅ Next.js build completed"
+      env:
+        WP_GRAPHQL_URL: https://backend.jvs.org.uk/graphql
+        BUILD_TIME_BACKEND_URL: https://backend.jvs.org.uk/graphql
+        NODE_ENV: production
+        
+    - name: Build for Cloudflare Workers
+      run: |
+        echo "⚡ Building for Cloudflare Workers..."
+        npx @cloudflare/next-on-pages
+        echo "✅ Cloudflare Workers build completed"
+        
+    - name: Create assets ignore file
+      run: |
+        echo "📝 Creating .assetsignore file..."
+        echo "_worker.js" > .vercel/output/static/.assetsignore
+        echo "✅ Assets ignore file created"
+        
+    - name: Run pre-deployment tests
+      if: github.event.inputs.run_tests == 'true'
+      run: |
+        echo "🧪 Running production tests..."
+        cd ..
+        if [ -f "test-full-site.js" ]; then
+          node test-full-site.js production
+          if [ $? -eq 0 ]; then
+            echo "✅ All tests passed, proceeding with deployment"
+          else
+            echo "❌ Tests failed, aborting deployment"
+            exit 1
+          fi
+        else
+          echo "⚠️ Test suite not found, skipping tests"
+        fi
+        
+    - name: Deploy to Cloudflare Workers (Production)
+      run: |
+        echo "🚀 Deploying to production..."
+        npx wrangler deploy --env production
+        echo "✅ Production deployment completed"
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        
+    - name: Run post-deployment verification
+      run: |
+        echo "🔍 Running post-deployment verification..."
+        cd ..
+        if [ -f "test-full-site.js" ]; then
+          sleep 30 # Give deployment time to propagate
+          node test-full-site.js production || echo "⚠️ Post-deployment tests failed, manual verification needed"
+        fi
+        
+    - name: Notify completion
+      run: |
+        echo "✅ JVS website production rebuild completed successfully!"
+        echo "🌐 Production URL: https://jvs.org.uk"
+        echo "⚡ Worker URL: https://jvs-website.dan-794.workers.dev"
+        echo "📅 Deployed at: $(date)"
+        echo "👤 Triggered by: ${{ github.event.inputs.user }}"
+        echo "📝 Reason: ${{ github.event.inputs.reason }}"
+        if [ "${{ github.event.inputs.run_tests }}" = "true" ]; then
+          echo "🧪 Tests: Enabled"
+        else
+          echo "🧪 Tests: Skipped"
+        fi
