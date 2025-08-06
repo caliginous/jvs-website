@@ -32,14 +32,21 @@ jobs:
       uses: actions/github-script@v7
       with:
         script: |
+          // Handle both workflow_dispatch and repository_dispatch events
+          const isWebhook = context.eventName === 'repository_dispatch';
+          const user = isWebhook ? 'webhook' : (context.payload.inputs?.user || 'manual');
+          const reason = isWebhook ? 'WordPress content update' : (context.payload.inputs?.reason || 'Manual trigger');
+          
+          console.log(`Triggering staging rebuild - User: ${user}, Reason: ${reason}, Event: ${context.eventName}`);
+          
           await github.rest.actions.createWorkflowDispatch({
             owner: context.repo.owner,
             repo: context.repo.repo,
             workflow_id: 'rebuild-staging.yml',
             ref: 'main',
             inputs: {
-              user: '${{ github.event.inputs.user || "webhook" }}',
-              reason: '${{ github.event.inputs.reason || "WordPress content update" }}'
+              user: user,
+              reason: reason
             }
           });
           
@@ -48,14 +55,19 @@ jobs:
       uses: actions/github-script@v7
       with:
         script: |
+          const user = context.payload.inputs?.user || 'manual';
+          const reason = context.payload.inputs?.reason || 'Production deployment';
+          
+          console.log(`Triggering production rebuild - User: ${user}, Reason: ${reason}`);
+          
           await github.rest.actions.createWorkflowDispatch({
             owner: context.repo.owner,
             repo: context.repo.repo,
             workflow_id: 'rebuild-production.yml',
             ref: 'main',
             inputs: {
-              user: '${{ github.event.inputs.user }}',
-              reason: '${{ github.event.inputs.reason }}',
+              user: user,
+              reason: reason,
               run_tests: 'true'
             }
           });
