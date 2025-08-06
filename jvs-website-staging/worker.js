@@ -3,6 +3,59 @@
 // Uses external GraphQL endpoint directly for reliability
 // Also handles Stripe config API to bypass Edge function issues
 
+async function sendEmailViaMailgun(emailData, apiKey) {
+  try {
+    console.log("Email service called with:", { emailData, apiKey: apiKey ? "Present" : "Missing" });
+    
+    if (!apiKey) {
+      console.error("No API key provided");
+      return {
+        success: false,
+        error: "Email service not configured"
+      };
+    }
+    
+    console.log("Creating direct HTTP request to Mailgun API. Using EU region.");
+    const mailgunApiBaseUrl = "https://api.eu.mailgun.net/v3";
+    const domain = "jvs.org.uk";
+    const auth = `api:${apiKey}`;
+    const authHeader = `Basic ${btoa(auth)}`;
+    
+    const formData = new FormData();
+    formData.append("from", emailData.from);
+    formData.append("to", emailData.to);
+    formData.append("subject", emailData.subject);
+    formData.append("html", emailData.html);
+    
+    const response = await fetch(`${mailgunApiBaseUrl}/${domain}/messages`, {
+      method: "POST",
+      headers: {
+        "Authorization": authHeader,
+      },
+      body: formData,
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Mailgun API error:", response.status, response.statusText, errorText);
+      return {
+        success: false,
+        error: `Mailgun API error: ${response.status} ${response.statusText} - ${errorText}`
+      };
+    }
+    
+    console.log("Email sent successfully via Mailgun");
+    return { success: true };
+    
+  } catch (error) {
+    console.error("Mailgun email sending failed:", error);
+    return {
+      success: false,
+      error: error.message || "Unknown error occurred"
+    };
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -21,6 +74,18 @@ export default {
       return await handleGraphQLAPI(request, env);
     }
     
+    
+    // Handle Contact API
+    if (url.pathname === "/api/contact" || url.pathname === "/api/contact/") {
+      console.log("📧 [CUSTOM WORKER] Handling Contact API");
+      return await handleContactAPI(request, env);
+    }
+    
+    // Handle Venue Hire API
+    if (url.pathname === "/api/venue-hire" || url.pathname === "/api/venue-hire/") {
+      console.log("🏛️ [CUSTOM WORKER] Handling Venue Hire API");
+      return await handleVenueHireAPI(request, env);
+    }
     // Handle Magazine API routes
     if (url.pathname === '/api/list-magazines' || url.pathname === '/api/list-magazines/') {
       console.log('📚 [CUSTOM WORKER] Handling list-magazines API');
@@ -257,6 +322,88 @@ async function handleGraphQLAPI(request, env) {
         }
       }
     );
+  }
+}
+
+async function handleContactAPI(request, env) {
+  if (request.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+  
+  try {
+    const { name, email, subject, message } = await request.json();
+    
+    if (!name || !email || !subject || !message) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    
+    const emailContent = `New Contact Form SubmissionnnName: ${name}nEmail: ${email}nSubject: ${subject}nnMessage:n${message}nn---nThis message was submitted via the JVS website contact form.`;
+    
+    const emailResult = await sendEmailViaMailgun({
+      from: `${name} <noreply@jvs.org.uk>`,
+      to: "info@jvs.org.uk",
+      subject: `JVS Contact Form: ${subject}`,
+      html: emailContent.replace(/\n/g, "<br>")
+    }, env.MAILGUN_API_KEY);
+    
+    return new Response(JSON.stringify({ message: "Message sent successfully" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
+    
+  } catch (error) {
+    console.error("Contact form error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+
+async function handleVenueHireAPI(request, env) {
+  if (request.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+  
+  try {
+    const { name, email, phone, eventType, eventDate, guestCount, requirements, message } = await request.json();
+    
+    if (!name || !email || !eventType || !eventDate) {
+      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    
+    const emailContent = `New Venue Hire EnquirynnName: ${name}nEmail: ${email}nPhone: ${phone || "Not provided"}nEvent Type: ${eventType}nEvent Date: ${eventDate}nGuest Count: ${guestCount || "Not specified"}nnSpecial Requirements:n${requirements || "None specified"}nnAdditional Message:n${message || "None"}nn---nThis enquiry was submitted via the JVS website venue hire form.`;
+    
+    const emailResult = await sendEmailViaMailgun({
+      from: `${name} <noreply@jvs.org.uk>`,
+      to: "info@jvs.org.uk",
+      subject: `JVS Venue Hire Enquiry: ${eventType} on ${eventDate}`,
+      html: emailContent.replace(/\n/g, "<br>")
+    }, env.MAILGUN_API_KEY);
+    
+    return new Response(JSON.stringify({ message: "Enquiry sent successfully" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
+    
+  } catch (error) {
+    console.error("Venue hire form error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }
 

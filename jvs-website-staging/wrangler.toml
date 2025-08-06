@@ -1,0 +1,88 @@
+name = "jvs-website"
+compatibility_date = "2024-07-20"
+compatibility_flags = ["nodejs_compat"]
+
+# Custom Worker Configuration
+# - Handles tickets routes directly to bypass Next.js Pages adapter Edge function issues
+# - Delegates all other routes to Next.js Pages adapter
+main = "worker.js"
+
+[assets]
+directory = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jvs-magazine-db-staging"
+database_id = "0e0754d1-8a34-47f7-b0ea-80d663f9e732"
+
+[env.production]
+name = "jvs-website"
+
+[env.production.assets]
+directory = ".vercel/output/static"
+
+# KV Namespace for storing sensitive data like Stripe keys
+[[env.production.kv_namespaces]]
+binding = "JVS_SECRETS"
+id = "7628564cb1e947908e46a7a47373c23b"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "jvs-magazine-db-staging"
+database_id = "0e0754d1-8a34-47f7-b0ea-80d663f9e732"
+
+[[env.production.vars]]
+WP_GRAPHQL_URL = "https://jvs.org.uk/graphql"
+
+[[env.production.vars]]
+WP_API_URL = "https://jvs.org.uk/wp-json/wp/v2"
+
+[[env.production.vars]]
+WP_USERNAME = "your_wordpress_username"
+
+[[env.production.vars]]
+WP_PASSWORD = "your_wordpress_password"
+
+# Stripe Configuration
+[[env.production.vars]]
+STRIPE_PUBLISHABLE_KEY = "pk_live_tUaoofuGHYYKl2YZprc5oEBs"
+
+# Feature Flags
+[[env.production.vars]]
+NEXT_PUBLIC_UNIFIED_EVENTS = "true"
+
+[env.staging]
+name = "jvs-website-staging"
+
+[[env.staging.vars]]
+name = "WP_GRAPHQL_URL"
+value = "https://jvs.org.uk/graphql"
+
+[[env.staging.vars]]
+name = "WP_API_URL"
+value = "https://jvs.org.uk/wp-json/wp/v2"
+
+[[env.staging.vars]]
+name = "WP_USERNAME"
+value = "your_wordpress_username"
+
+[[env.staging.vars]]
+name = "WP_PASSWORD"
+value = "your_wordpress_password"
+
+# Stripe Configuration
+[[env.staging.vars]]
+name = "STRIPE_PUBLISHABLE_KEY"
+value = "pk_test_XXXXXXXX" # TODO: Replace with actual Stripe test publishable key
+
+# Feature Flags
+[[env.staging.vars]]
+name = "NEXT_PUBLIC_UNIFIED_EVENTS"
+value = "true"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "jvs-magazine-db-staging"
+database_id = "0e0754d1-8a34-47f7-b0ea-80d663f9e732"
+
+ 
