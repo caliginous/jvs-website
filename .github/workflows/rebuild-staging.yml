@@ -18,10 +18,6 @@ jobs:
   rebuild-staging:
     runs-on: ubuntu-latest
     
-    defaults:
-      run:
-        working-directory: jvs-website
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -80,7 +76,6 @@ jobs:
     - name: Run staging tests
       run: |
         echo "🧪 Running staging tests..."
-        cd ..
         if [ -f "test-full-site.js" ]; then
           node test-full-site.js staging || echo "⚠️ Tests failed but deployment continues"
         else

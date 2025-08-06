@@ -21,10 +21,6 @@ jobs:
   rebuild-production:
     runs-on: ubuntu-latest
     
-    defaults:
-      run:
-        working-directory: jvs-website
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -76,7 +72,6 @@ jobs:
       if: github.event.inputs.run_tests == 'true'
       run: |
         echo "🧪 Running production tests..."
-        cd ..
         if [ -f "test-full-site.js" ]; then
           node test-full-site.js production
           if [ $? -eq 0 ]; then
@@ -100,7 +95,6 @@ jobs:
     - name: Run post-deployment verification
       run: |
         echo "🔍 Running post-deployment verification..."
-        cd ..
         if [ -f "test-full-site.js" ]; then
           sleep 30 # Give deployment time to propagate
           node test-full-site.js production || echo "⚠️ Post-deployment tests failed, manual verification needed"
