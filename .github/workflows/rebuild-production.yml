@@ -23,7 +23,7 @@ jobs:
     
     defaults:
       run:
-        working-directory: ./jvs-website
+        working-directory: jvs-website
     
     steps:
     - name: Checkout code
