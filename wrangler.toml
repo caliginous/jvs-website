@@ -18,9 +18,6 @@ database_id = "2b2ca51b-2571-486a-b569-d595f75f9fd8"
 [env.production]
 name = "jvs-website"
 
-[env.production.assets]
-directory = ".vercel/output/static"
-
 # KV Namespace for storing sensitive data like Stripe keys
 [[env.production.kv_namespaces]]
 binding = "JVS_SECRETS"
@@ -31,59 +28,39 @@ binding = "DB"
 database_name = "jvs-magazine-db"
 database_id = "2b2ca51b-2571-486a-b569-d595f75f9fd8"
 
-[[env.production.vars]]
+[env.production.vars]
 WP_GRAPHQL_URL = "https://backend.jvs.org.uk/graphql"
-
-[[env.production.vars]]
 WP_API_URL = "https://backend.jvs.org.uk/wp-json/wp/v2"
-
-[[env.production.vars]]
 WP_USERNAME = "your_wordpress_username"
-
-[[env.production.vars]]
 WP_PASSWORD = "your_wordpress_password"
-
-# Stripe Configuration
-[[env.production.vars]]
+ALLOWED_ORIGIN = "https://jvs.org.uk"
 STRIPE_PUBLISHABLE_KEY = "pk_live_tUaoofuGHYYKl2YZprc5oEBs"
-
-# Feature Flags
-[[env.production.vars]]
 NEXT_PUBLIC_UNIFIED_EVENTS = "true"
+MAILCHIMP_API_KEY = "e0e760a968f8a592f4236264d1929081-us4"
+MAILCHIMP_API_SERVER = "us4"
+MAILCHIMP_AUDIENCE_ID = "77ab04b46d"
+# MAILGUN_API_KEY is set as a secure secret via wrangler secret put
 
 [env.staging]
 name = "jvs-website-staging"
 
-# KV Namespace for storing sensitive data in staging
+# KV Namespace for storing sensitive data like Mailgun API key
 [[env.staging.kv_namespaces]]
 binding = "JVS_SECRETS"
 id = "7628564cb1e947908e46a7a47373c23b"
 
-[[env.staging.vars]]
-name = "WP_GRAPHQL_URL"
-value = "https://backend.jvs.org.uk/graphql"
-
-[[env.staging.vars]]
-name = "WP_API_URL"
-value = "https://backend.jvs.org.uk/wp-json/wp/v2"
-
-[[env.staging.vars]]
-name = "WP_USERNAME"
-value = "your_wordpress_username"
-
-[[env.staging.vars]]
-name = "WP_PASSWORD"
-value = "your_wordpress_password"
-
-# Stripe Configuration
-[[env.staging.vars]]
-name = "STRIPE_PUBLISHABLE_KEY"
-value = "pk_test_XXXXXXXX" # TODO: Replace with actual Stripe test publishable key
-
-# Feature Flags
-[[env.staging.vars]]
-name = "NEXT_PUBLIC_UNIFIED_EVENTS"
-value = "true"
+[env.staging.vars]
+WP_GRAPHQL_URL = "https://backend.jvs.org.uk/graphql"
+WP_API_URL = "https://backend.jvs.org.uk/wp-json/wp/v2"
+WP_USERNAME = "your_wordpress_username"
+WP_PASSWORD = "your_wordpress_password"
+ALLOWED_ORIGIN = "https://staging.jvs.org.uk"
+STRIPE_PUBLISHABLE_KEY = "pk_test_tUaoofuGHYYKl2YZprc5oEBs"
+NEXT_PUBLIC_UNIFIED_EVENTS = "true"
+MAILCHIMP_API_KEY = "e0e760a968f8a592f4236264d1929081-us4"
+MAILCHIMP_API_SERVER = "us4"
+MAILCHIMP_AUDIENCE_ID = "77ab04b46d"
+# MAILGUN_API_KEY is set as a secure secret via wrangler secret put
 
 [[env.staging.d1_databases]]
 binding = "DB"

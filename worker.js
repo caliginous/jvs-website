@@ -3,11 +3,36 @@
 // Uses external GraphQL endpoint directly for reliability
 // Also handles Stripe config API to bypass Edge function issues
 
+// Helper function to generate CORS headers
+function getCorsHeaders(request) {
+  const origin = request.headers.get('Origin');
+  const allowOrigin = origin || 'https://staging.jvs.org.uk';
+  
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true'
+  };
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     
     console.log(`🚀 [CUSTOM WORKER] Request URL: ${url.pathname}`);
+    
+    // Global CORS preflight handler for all API routes
+    if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) {
+      console.log('🌐 [CUSTOM WORKER] Handling global CORS preflight');
+      return new Response(null, {
+        status: 204,
+        headers: {
+          ...getCorsHeaders(request),
+          'Access-Control-Max-Age': '86400'
+        }
+      });
+    }
     
     // Handle Stripe config API
     if (url.pathname === '/api/stripe-config' || url.pathname === '/api/stripe-config/') {
@@ -345,11 +370,7 @@ async function handleGraphQLAPI(request, env) {
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 204,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
+        headers: getCorsHeaders(request)
       });
     }
 
@@ -361,9 +382,7 @@ async function handleGraphQLAPI(request, env) {
           status: 405,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+            ...getCorsHeaders(request)
           }
         }
       );
@@ -398,9 +417,7 @@ async function handleGraphQLAPI(request, env) {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        ...getCorsHeaders(request)
       }
     });
   } catch (error) {
@@ -411,7 +428,7 @@ async function handleGraphQLAPI(request, env) {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          ...getCorsHeaders(request)
         }
       }
     );
