@@ -3,7 +3,7 @@ import { onError } from '@apollo/client/link/error';
 
 // Create a custom fetch function that tries proxy first, then falls back to direct WordPress
 const createFallbackFetch = () => {
-  const proxyUrl = 'https://jvs-website.dan-794.workers.dev/api/graphql';
+  const proxyUrl = 'https://jvs-website.dan-794.workers.dev/api/graphql-v5'; // Cache-busting endpoint v5
   const directUrl = process.env.WP_GRAPHQL_URL || 'https://www.jvs.org.uk/graphql';
   
   console.log('GraphQL Proxy URL:', proxyUrl);
@@ -59,7 +59,7 @@ const createFallbackFetch = () => {
 };
 
 const httpLink = createHttpLink({
-  uri: 'https://jvs-website.dan-794.workers.dev/api/graphql', // This will be overridden by custom fetch
+  uri: 'https://jvs-website.dan-794.workers.dev/api/graphql-v5', // Cache-busting endpoint - overridden by custom fetch
   credentials: 'include', // Include cookies for session handling
   headers: {
     'Content-Type': 'application/json',

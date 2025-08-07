@@ -19,7 +19,7 @@ export default function CheckoutPage() {
     const fetchConfig = async () => {
       try {
         // Fetch Stripe key
-        const stripeResponse = await fetch('/api/stripe-config');
+        const stripeResponse = await fetch('/api/stripe-config-v5'); // Cache-busting endpoint
         if (!stripeResponse.ok) {
           throw new Error('Failed to fetch Stripe configuration');
         }

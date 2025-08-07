@@ -1,17 +1,18 @@
-// Custom Cloudflare Worker for JVS Website
+// Custom Cloudflare Worker for JVS Website - FINAL CACHE CLEAR v5
 // Handles tickets routes with full TicketSelector functionality
 // Uses external GraphQL endpoint directly for reliability
 // Also handles Stripe config API to bypass Edge function issues
 
-// Helper function to generate CORS headers
+// Helper function to generate CORS headers - Updated for Cache-Control support
 function getCorsHeaders(request) {
   const origin = request.headers.get('Origin');
-  const allowOrigin = origin || 'https://staging.jvs.org.uk';
+  // Allow the actual origin, or fallback to production domain
+  const allowOrigin = origin || 'https://jvs.org.uk';
   
   return {
     'Access-Control-Allow-Origin': allowOrigin,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, Cache-Control, User-Agent, Accept',
     'Access-Control-Allow-Credentials': 'true'
   };
 }
@@ -22,95 +23,145 @@ export default {
     
     console.log(`🚀 [CUSTOM WORKER] Request URL: ${url.pathname}`);
     
-    // Global CORS preflight handler for all API routes
+    // Global CORS preflight handler for all API routes - Cache-Control fix v2
     if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) {
-      console.log('🌐 [CUSTOM WORKER] Handling global CORS preflight');
+      console.log('🌐 [CUSTOM WORKER] Handling global CORS preflight - Cache-Control fix v2');
+      const corsHeaders = getCorsHeaders(request);
+      console.log('🌐 [CORS DEBUG] Headers:', JSON.stringify(corsHeaders));
       return new Response(null, {
         status: 204,
         headers: {
-          ...getCorsHeaders(request),
+          ...corsHeaders,
           'Access-Control-Max-Age': '86400'
         }
       });
     }
-    
-    // Handle Stripe config API
-    if (url.pathname === '/api/stripe-config' || url.pathname === '/api/stripe-config/') {
-      console.log('💳 [CUSTOM WORKER] Handling Stripe config API');
-      return await handleStripeConfig(request, env);
-    }
+      
+      // Handle Stripe config API
+      if (url.pathname === '/api/stripe-config' || url.pathname === '/api/stripe-config/' || url.pathname === '/api/stripe-config-v5' || url.pathname === '/api/stripe-config-v5/') {
+        console.log('💳 [CUSTOM WORKER] Handling Stripe config API (v5 cache-bust)');
+        return await handleStripeConfig(request, env);
+      }
     
     // Handle create payment intent API
     if (url.pathname === '/api/create-payment-intent' || url.pathname === '/api/create-payment-intent/') {
       console.log('💳 [CUSTOM WORKER] Handling create payment intent API');
       return await handleCreatePaymentIntent(request, env);
-    }
-    
-    // Handle GraphQL API
-    if (url.pathname === '/api/graphql' || url.pathname === '/api/graphql/') {
-      console.log('🔍 [CUSTOM WORKER] Handling GraphQL API');
-      return await handleGraphQLAPI(request, env);
+      }
+      
+      // Test endpoint to verify worker deployment
+      if (url.pathname === '/api/cors-test') {
+        console.log('🧪 [CORS-TEST] Testing CORS headers');
+        return new Response(JSON.stringify({
+          message: 'CORS Test - Worker Deployed Successfully',
+          timestamp: new Date().toISOString(),
+          origin: request.headers.get('Origin')
+        }), {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json',
+            ...getCorsHeaders(request),
+            'X-Worker-Version': '6f11fc65-cache-bust-v5'
+          }
+        });
+      }
+
+            // Handle GraphQL API - with explicit CORS fix and cache-busting support
+      if (url.pathname === '/api/graphql' || url.pathname === '/api/graphql/' || url.pathname === '/api/graphql-v2' || url.pathname === '/api/graphql-v2/' || url.pathname === '/api/graphql-v3' || url.pathname === '/api/graphql-v3/' || url.pathname === '/api/graphql-v4' || url.pathname === '/api/graphql-v4/' || url.pathname === '/api/graphql-v5' || url.pathname === '/api/graphql-v5/') {
+        console.log('🔍 [CUSTOM WORKER] Handling GraphQL API (cache-bust v5)');
+        
+        // Handle OPTIONS preflight explicitly for GraphQL with fresh headers - FORCE OVERRIDE
+        if (request.method === 'OPTIONS') {
+          console.log('🌐 [GRAPHQL] Handling explicit CORS preflight (v5 - FORCE)');
+          return new Response(null, {
+            status: 204,
+            headers: {
+              'Access-Control-Allow-Origin': 'https://jvs.org.uk',
+              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+              'Access-Control-Allow-Headers': 'Content-Type, Authorization, Cache-Control, User-Agent, Accept',
+              'Access-Control-Allow-Credentials': 'true',
+              'Access-Control-Max-Age': '0', // Don't cache preflight responses
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+              'Pragma': 'no-cache',
+              'Expires': '0'
+            }
+          });
+        }
+        
+        return await handleGraphQLAPI(request, env);
+      }
+      
+    // Handle Recipes API (Next.js route removed - should work now)
+    if (url.pathname === '/api/recipes' || url.pathname === '/api/recipes/') {
+      console.log('🍽️ [CUSTOM WORKER] Handling Recipes API (Next.js route removed)');
+      return await handleRecipesAPI(request, env);
     }
     
     // Handle Contact API
-    if (url.pathname === '/api/contact' || url.pathname === '/api/contact/') {
+      if (url.pathname === '/api/contact' || url.pathname === '/api/contact/') {
       console.log('📧 [CUSTOM WORKER] Handling contact API');
       return await handleContactAPI(request, env);
-    }
-    
+      }
+
     // Handle Venue Hire API
-    if (url.pathname === '/api/venue-hire' || url.pathname === '/api/venue-hire/') {
+      if (url.pathname === '/api/venue-hire' || url.pathname === '/api/venue-hire/') {
       console.log('🏢 [CUSTOM WORKER] Handling venue hire API');
       return await handleVenueHireAPI(request, env);
+      }
+      
+      // Handle Magazine API routes
+      if (url.pathname === '/api/list-magazines' || url.pathname === '/api/list-magazines/') {
+        console.log('📚 [CUSTOM WORKER] Handling list-magazines API');
+        return await handleListMagazinesAPI(request, env);
+      }
+      
+      if (url.pathname === '/api/magazine' || url.pathname === '/api/magazine/') {
+        console.log('📖 [CUSTOM WORKER] Handling magazine API');
+        return await handleMagazineAPI(request, env);
+      }
+      
+      if (url.pathname === '/api/search-magazines' || url.pathname === '/api/search-magazines/') {
+        console.log('🔍 [CUSTOM WORKER] Handling search-magazines API');
+        return await handleSearchMagazinesAPI(request, env);
+      }
+      
+      // Handle tickets routes specifically
+      if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/tickets')) {
+        console.log('🎫 [CUSTOM WORKER] Handling tickets route directly');
+        return await handleTicketsRoute(request, env);
+      }
+      
+      // Handle tickets routes with trailing slash
+      if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/tickets/')) {
+        console.log('🎫 [CUSTOM WORKER] Handling tickets route with trailing slash');
+        return await handleTicketsRoute(request, env);
+      }
+      
+      // Handle unified event routes
+      if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/unified')) {
+        console.log('🔄 [CUSTOM WORKER] Handling unified event route');
+        return await handleUnifiedEventRoute(request, env);
+      }
+      
+      // Handle unified event routes with trailing slash
+      if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/unified/')) {
+        console.log('🔄 [CUSTOM WORKER] Handling unified event route with trailing slash');
+        return await handleUnifiedEventRoute(request, env);
+      }
+      
+      // Handle magazine detail pages
+      if (url.pathname.startsWith('/magazine/') && url.pathname !== '/magazine/' && url.pathname !== '/magazine/search' && !url.pathname.startsWith('/magazine/search/')) {
+        console.log('📖 [CUSTOM WORKER] Handling magazine detail page');
+        return await handleMagazineDetailPage(request, env);
+      }
+    
+    // CRITICAL FIX: Delegate unhandled /api/* routes back to Next.js Edge Functions
+    if (url.pathname.startsWith('/api/')) {
+      console.log(`🔁 [CUSTOM WORKER] API passthrough to Next.js: ${url.pathname}`);
+      return env.ASSETS.fetch(request); // Delegate to .func.js handler
     }
     
-    // Handle Magazine API routes
-    if (url.pathname === '/api/list-magazines' || url.pathname === '/api/list-magazines/') {
-      console.log('📚 [CUSTOM WORKER] Handling list-magazines API');
-      return await handleListMagazinesAPI(request, env);
-    }
-    
-    if (url.pathname === '/api/magazine' || url.pathname === '/api/magazine/') {
-      console.log('📖 [CUSTOM WORKER] Handling magazine API');
-      return await handleMagazineAPI(request, env);
-    }
-    
-    if (url.pathname === '/api/search-magazines' || url.pathname === '/api/search-magazines/') {
-      console.log('🔍 [CUSTOM WORKER] Handling search-magazines API');
-      return await handleSearchMagazinesAPI(request, env);
-    }
-    
-    // Handle tickets routes specifically
-    if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/tickets')) {
-      console.log('🎫 [CUSTOM WORKER] Handling tickets route directly');
-      return await handleTicketsRoute(request, env);
-    }
-    
-    // Handle tickets routes with trailing slash
-    if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/tickets/')) {
-      console.log('🎫 [CUSTOM WORKER] Handling tickets route with trailing slash');
-      return await handleTicketsRoute(request, env);
-    }
-    
-    // Handle unified event routes
-    if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/unified')) {
-      console.log('🔄 [CUSTOM WORKER] Handling unified event route');
-      return await handleUnifiedEventRoute(request, env);
-    }
-    
-    // Handle unified event routes with trailing slash
-    if (url.pathname.startsWith('/events/') && url.pathname.endsWith('/unified/')) {
-      console.log('🔄 [CUSTOM WORKER] Handling unified event route with trailing slash');
-      return await handleUnifiedEventRoute(request, env);
-    }
-    
-    // Handle magazine detail pages
-    if (url.pathname.startsWith('/magazine/') && url.pathname !== '/magazine/' && url.pathname !== '/magazine/search' && !url.pathname.startsWith('/magazine/search/')) {
-      console.log('📖 [CUSTOM WORKER] Handling magazine detail page');
-      return await handleMagazineDetailPage(request, env);
-    }
-    
-    // For all other routes, return a 404 for now
+    // For all other routes, return a 404 for now (Next.js routing issue)
     console.log('📄 [CUSTOM WORKER] Route not handled, returning 404');
     return new Response('Not Found', { status: 404 });
   }
@@ -122,12 +173,25 @@ async function handleStripeConfig(request, env) {
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         status: 204,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      headers: {
+          ...getCorsHeaders(request),
+          'Access-Control-Max-Age': '86400'
         }
       });
+    }
+
+    // Only handle GET requests
+    if (request.method !== 'GET') {
+      return new Response(
+        JSON.stringify({ error: 'Method not allowed' }),
+        {
+          status: 405,
+      headers: {
+        'Content-Type': 'application/json',
+            ...getCorsHeaders(request)
+          }
+        }
+      );
     }
 
     // Get Stripe publishable key from KV store (Cloudflare Workers) or environment variable (development)
@@ -138,35 +202,28 @@ async function handleStripeConfig(request, env) {
       try {
         publishableKey = await env.JVS_SECRETS.get('STRIPE_PUBLISHABLE_KEY');
         console.log('✅ [STRIPE CONFIG] Retrieved publishable key from KV store');
-      } catch (error) {
+  } catch (error) {
         console.log('⚠️ [STRIPE CONFIG] Could not retrieve from KV store:', error);
       }
     }
     
     // Fallback to environment variables (for development)
     if (!publishableKey) {
-      // Try to find the STRIPE_PUBLISHABLE_KEY in the environment bindings
-      for (let i = 0; i < 10; i++) {
-        const envVar = env[i];
-        if (envVar && typeof envVar === 'object' && envVar.STRIPE_PUBLISHABLE_KEY) {
-          publishableKey = envVar.STRIPE_PUBLISHABLE_KEY;
-          console.log('✅ [STRIPE CONFIG] Retrieved publishable key from environment');
-          break;
-        }
+      publishableKey = env.STRIPE_PUBLISHABLE_KEY;
+      if (publishableKey) {
+        console.log('✅ [STRIPE CONFIG] Retrieved publishable key from environment');
       }
     }
     
     if (!publishableKey) {
       console.error('❌ [STRIPE CONFIG] STRIPE_PUBLISHABLE_KEY not found in KV store or environment');
-      return new Response(
+            return new Response(
         JSON.stringify({ error: 'Stripe configuration not available' }),
         { 
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
+            ...getCorsHeaders(request)
           }
         }
       );
@@ -174,27 +231,25 @@ async function handleStripeConfig(request, env) {
     
     console.log('✅ [STRIPE CONFIG] Returning publishable key');
     
-    return new Response(
+        return new Response(
       JSON.stringify({ publishableKey: publishableKey }),
       {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+          ...getCorsHeaders(request)
         }
       }
     );
   } catch (error) {
     console.error('❌ [STRIPE CONFIG] Error:', error);
-    return new Response(
+        return new Response(
       JSON.stringify({ error: 'Failed to load Stripe configuration' }),
       { 
         status: 500,
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          ...getCorsHeaders(request)
         }
       }
     );
@@ -230,18 +285,16 @@ async function handleCreatePaymentIntent(request, env) {
     
     if (!secretKey) {
       console.error('❌ [PAYMENT INTENT] No secret key found in KV store');
-      return new Response(
-        JSON.stringify({ error: 'Payment service not configured' }),
-        { 
-          status: 503,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+              return new Response(
+          JSON.stringify({ error: 'Payment service not configured' }),
+          { 
+            status: 503,
+            headers: {
+              'Content-Type': 'application/json',
+              ...getCorsHeaders(request)
+            }
           }
-        }
-      );
+        );
     }
     
     // Parse request body
@@ -255,8 +308,8 @@ async function handleCreatePaymentIntent(request, env) {
         JSON.stringify({ error: 'Invalid amount provided' }),
         { 
           status: 400,
-          headers: {
-            'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -315,8 +368,8 @@ async function handleCreatePaymentIntent(request, env) {
         JSON.stringify({ error: 'Failed to create payment intent' }),
         { 
           status: 500,
-          headers: {
-            'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -337,13 +390,13 @@ async function handleCreatePaymentIntent(request, env) {
         status: paymentIntentData.status
       }),
       { 
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
+      }
       }
     );
     
@@ -352,9 +405,9 @@ async function handleCreatePaymentIntent(request, env) {
     return new Response(
       JSON.stringify({ error: 'Failed to create payment intent' }),
       { 
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -380,8 +433,8 @@ async function handleGraphQLAPI(request, env) {
         JSON.stringify({ error: 'Method not allowed' }),
         {
           status: 405,
-          headers: {
-            'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
             ...getCorsHeaders(request)
           }
         }
@@ -414,9 +467,9 @@ async function handleGraphQLAPI(request, env) {
     console.log('✅ [GRAPHQL API] Successfully forwarded request');
     
     return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
         ...getCorsHeaders(request)
       }
     });
@@ -455,8 +508,8 @@ async function handleContactAPI(request, env) {
         JSON.stringify({ error: 'Method not allowed' }),
         {
           status: 405,
-          headers: {
-            'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -474,9 +527,9 @@ async function handleContactAPI(request, env) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         {
-          status: 400,
-          headers: {
-            'Content-Type': 'application/json',
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -507,8 +560,8 @@ This message was submitted via the JVS website contact form.
         JSON.stringify({ error: 'Email service not configured' }),
         {
           status: 500,
-          headers: {
-            'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -536,9 +589,9 @@ This message was submitted via the JVS website contact form.
       return new Response(
         JSON.stringify({ error: 'Failed to send email' }),
         {
-          status: 500,
-          headers: {
-            'Content-Type': 'application/json',
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -567,9 +620,9 @@ This message was submitted via the JVS website contact form.
     return new Response(
       JSON.stringify({ error: 'Failed to process contact form submission' }),
       {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -599,8 +652,8 @@ async function handleVenueHireAPI(request, env) {
         JSON.stringify({ error: 'Method not allowed' }),
         {
           status: 405,
-          headers: {
-            'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -619,8 +672,8 @@ async function handleVenueHireAPI(request, env) {
         JSON.stringify({ error: 'Missing required fields' }),
         {
           status: 400,
-          headers: {
-            'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -684,8 +737,8 @@ This request was submitted via the JVS website venue hire form.
         JSON.stringify({ error: 'Failed to send email' }),
         {
           status: 500,
-          headers: {
-            'Content-Type': 'application/json',
+      headers: {
+        'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'POST, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -714,9 +767,9 @@ This request was submitted via the JVS website venue hire form.
     return new Response(
       JSON.stringify({ error: 'Failed to process venue hire request' }),
       {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization'
@@ -726,8 +779,79 @@ This request was submitted via the JVS website venue hire form.
   }
 }
 
+async function handleRecipesAPI(request, env) {
+  try {
+    // Handle OPTIONS requests for CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization, cache-control'
+        }
+      });
+    }
+
+    // Only handle GET requests
+    if (request.method !== 'GET') {
+      return new Response(
+        JSON.stringify({ error: 'Method not allowed' }),
+        {
+          status: 405,
+        headers: {
+          'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          }
+        }
+      );
+    }
+
+    console.log('🍽️ [RECIPES API] Fetching recipes from Sanity and WordPress');
+
+    // Import the getAllRecipes function
+    const { getAllRecipes } = await import('./src/lib/getRecipes.js');
+    
+    // Fetch recipes
+    const recipes = await getAllRecipes();
+    
+    const sanityRecipes = recipes.filter(r => r.source === 'sanity');
+    const wpRecipes = recipes.filter(r => r.source === 'wp');
+    
+    console.log(`🎯 [RECIPES API] Returning ${recipes.length} recipes (${wpRecipes.length} WP + ${sanityRecipes.length} Sanity)`);
+    
+    if (sanityRecipes.length > 0) {
+      console.log('🍽️ [RECIPES API] Sanity recipes found:');
+      sanityRecipes.forEach(r => console.log(`   - ${r.title} (${r.id})`));
+    }
+
+    return new Response(JSON.stringify(recipes), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, cache-control'
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ [RECIPES API] Error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to fetch recipes', message: error.message }),
+      {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+      }
+      }
+    );
+  }
+}
+
 async function handleTicketsRoute(request, env) {
-  const url = new URL(request.url);
+    const url = new URL(request.url);
   const pathParts = url.pathname.split('/');
   const slug = pathParts[2]; // /events/[slug]/tickets -> slug is at index 2
   
@@ -824,10 +948,10 @@ function generateTicketsHTML(event, slug) {
   const displayPrice = event.eventPrice || 'Free';
   
   return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${event.name} - Tickets | JVS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -910,7 +1034,7 @@ function generateTicketsHTML(event, slug) {
             box-shadow: 0 4px 6px -1px rgba(139, 195, 74, 0.1);
         }
     </style>
-</head>
+      </head>
 <body>
     <!-- Navigation -->
     <nav class="bg-[#263238] shadow-lg">
@@ -943,7 +1067,7 @@ function generateTicketsHTML(event, slug) {
                     <a href="/membership" class="bg-[#8BC34A] hover:bg-[#558B2F] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
                         Join Us
                     </a>
-                </div>
+              </div>
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
@@ -953,7 +1077,7 @@ function generateTicketsHTML(event, slug) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                </div>
+            </div>
             </div>
         </div>
     </nav>
@@ -1012,7 +1136,7 @@ function generateTicketsHTML(event, slug) {
                         </div>
                     </div>
                 </div>
-                ` : ''}
+              ` : ''}
             </div>
 
             <!-- Ticket Purchase -->
@@ -1027,7 +1151,7 @@ function generateTicketsHTML(event, slug) {
                         ${event.ticketTypes.map((ticket, index) => `
                         <div class="ticket-card">
                             <div class="flex justify-between items-start mb-4">
-                                <div>
+                  <div>
                                     <h3 class="font-semibold text-[#263238] text-lg mb-1">${ticket.label || ticket.type}</h3>
                                     <p class="text-[#B0BEC5]">£${ticket.price || '0'}</p>
                                 </div>
@@ -1035,9 +1159,9 @@ function generateTicketsHTML(event, slug) {
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#8BC34A] text-white">
                                         Available
                                     </span>
-                                </div>
-                            </div>
-                            
+                    </div>
+                  </div>
+                  
                             <div class="flex items-center justify-between">
                                 <div class="quantity-controls">
                                     <button onclick="updateQuantity(${index}, -1)" class="quantity-btn" id="decrease-${index}">−</button>
@@ -1079,10 +1203,10 @@ function generateTicketsHTML(event, slug) {
                     </div>
                     `}
                 </div>
-            </div>
-        </div>
-    </div>
-
+                    </div>
+                  </div>
+                </div>
+                
     <!-- Footer -->
     <footer class="bg-[#263238] text-white mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -1116,7 +1240,7 @@ function generateTicketsHTML(event, slug) {
                                 <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" />
                             </svg>
                         </a>
-                    </div>
+                  </div>
                 </div>
 
                 <!-- Quick Links -->
@@ -1154,7 +1278,7 @@ function generateTicketsHTML(event, slug) {
                             </a>
                         </li>
                     </ul>
-                </div>
+                    </div>
 
                 <!-- Newsletter Signup -->
                 <div>
@@ -1173,8 +1297,8 @@ function generateTicketsHTML(event, slug) {
                             Subscribe
                         </button>
                     </form>
-                </div>
-            </div>
+                  </div>
+              </div>
 
             <!-- Bottom Bar -->
             <div class="border-t border-neutral-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
@@ -1191,8 +1315,8 @@ function generateTicketsHTML(event, slug) {
                     <a href="/contact" class="text-neutral-400 hover:text-[#4FC3F7] text-sm">
                         Contact
                     </a>
-                </div>
             </div>
+        </div>
         </div>
     </footer>
 
@@ -1279,7 +1403,7 @@ async function handleUnifiedEventRoute(request, env) {
     try {
       const graphqlResponse = await fetch('https://backend.jvs.org.uk/graphql', {
         method: 'POST',
-        headers: {
+      headers: {
           'Content-Type': 'application/json',
           'User-Agent': 'JVS-Website/1.0',
           'Accept': 'application/json',
@@ -1385,10 +1509,10 @@ function generateUnifiedEventHTML(event, slug) {
   const displayPrice = event.eventPrice || 'Free';
 
   return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${event.name} - Unified Event | JVS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -1471,8 +1595,8 @@ function generateUnifiedEventHTML(event, slug) {
             box-shadow: 0 4px 6px -1px rgba(139, 195, 74, 0.1);
         }
     </style>
-</head>
-<body class="bg-gray-50">
+      </head>
+      <body class="bg-gray-50">
     <!-- Navigation -->
     <nav class="bg-[#263238] shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1504,7 +1628,7 @@ function generateUnifiedEventHTML(event, slug) {
                     <a href="/membership" class="bg-[#8BC34A] hover:bg-[#558B2F] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
                         Join Us
                     </a>
-                </div>
+              </div>
             </div>
         </div>
     </nav>
@@ -1529,8 +1653,8 @@ function generateUnifiedEventHTML(event, slug) {
             </div>
         </div>
     </section>
-    ` : ''}
-
+              ` : ''}
+              
     <!-- Event Content with Ticket Purchasing -->
     <section class="py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1547,19 +1671,19 @@ function generateUnifiedEventHTML(event, slug) {
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 </svg>
-                                <div>
+                  <div>
                                     <h3 class="font-semibold text-gray-900 mb-2">Venue</h3>
                                     <p class="text-gray-600 text-lg">${displayVenue}</p>
-                                </div>
-                            </div>
+                    </div>
+                  </div>
                             ` : ''}
-                            
+                  
                             ${eventDate ? `
                             <div class="flex items-start">
                                 <svg class="w-6 h-6 text-primary-600 mt-1 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <div>
+                  <div>
                                     <h3 class="font-semibold text-gray-900 mb-2">Date & Time</h3>
                                     <p class="text-gray-600 text-lg">${formatDate(eventDate)}</p>
                                 </div>
@@ -1632,28 +1756,28 @@ function generateUnifiedEventHTML(event, slug) {
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">
                                             Sold Out
                                         </span>
-                                        `}
-                                    </div>
-                                </div>
-                                
+                    `}
+                  </div>
+                </div>
+                
                                 <div class="flex items-center justify-between">
                                     <div class="quantity-controls">
                                         <button onclick="updateQuantity(${index}, -1)" class="quantity-btn" id="decrease-${index}">−</button>
                                         <span id="quantity-${index}" class="quantity-display">0</span>
                                         <button onclick="updateQuantity(${index}, 1)" class="quantity-btn" id="increase-${index}">+</button>
-                                    </div>
+                    </div>
                                     <div class="text-right">
                                         <p class="text-sm text-[#B0BEC5]">Total: <span class="font-semibold text-[#263238]">£<span id="total-${index}">0.00</span></span></p>
-                                    </div>
-                                </div>
-                            </div>
+                  </div>
+              </div>
+            </div>
                             `).join('')}
                             
                             <div class="bg-[#F5F5F0] rounded-lg p-6 mt-8">
                                 <div class="flex justify-between items-center mb-6">
                                     <span class="text-lg font-semibold text-[#263238]">Total Tickets: <span id="total-tickets" class="text-[#8BC34A]">0</span></span>
                                     <span class="text-lg font-semibold text-[#263238]">Total Price: <span id="total-price" class="text-[#8BC34A]">£0.00</span></span>
-                                </div>
+        </div>
                                 
                                 <button onclick="handlePurchase()" id="purchase-btn" class="w-full bg-[#8BC34A] hover:bg-[#558B2F] text-white font-semibold py-4 px-6 rounded-lg text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                                     Purchase Tickets
@@ -1827,7 +1951,7 @@ function generateUnifiedEventHTML(event, slug) {
             }
         });
     </script>
-</body>
+      </body>
 </html>`;
 } 
 
