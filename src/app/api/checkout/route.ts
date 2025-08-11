@@ -5,13 +5,61 @@ export const runtime = 'edge';
 export async function POST(request: NextRequest) {
   try {
     console.log('=== CHECKOUT API ROUTE START ===');
-    
     // Resolve WordPress base URL once
     const wpUrl = process.env.WP_GRAPHQL_URL?.replace('/graphql', '') || 'https://backend.jvs.org.uk';
     const checkoutUrl = `${wpUrl}/checkout`;
     const ajaxCheckoutUrl = `${wpUrl}/?wc-ajax=checkout`;
     
-    // 1) Prefetch checkout page to obtain cookies and dynamic nonces from WordPress
+    // 1) Get the form data from the request
+    const formData = await request.formData();
+    
+    // Extract first product and quantity to ensure a WooCommerce cart exists
+    const productIdEntry = Array.from(formData.entries()).find(([key]) => /cart_item\[\d+\]\[product_id\]/.test(key));
+    const quantityEntry = Array.from(formData.entries()).find(([key]) => /cart_item\[\d+\]\[quantity\]/.test(key));
+    const productId = productIdEntry ? productIdEntry[1].toString() : null;
+    const quantity = quantityEntry ? quantityEntry[1].toString() : '1';
+    
+    // Start with a fresh cookie jar
+    let accumulatedCookies: string[] = [];
+    const mergeSetCookies = (response: Response) => {
+      const cookies: string[] = [];
+      // @ts-ignore
+      if (typeof (response.headers as any).getSetCookie === 'function') {
+        // @ts-ignore
+        const sc = (response.headers as any).getSetCookie();
+        if (Array.isArray(sc)) cookies.push(...sc);
+      }
+      const single = response.headers.get('set-cookie');
+      if (single) cookies.push(single);
+      if (cookies.length) accumulatedCookies.push(...cookies);
+    };
+    const buildCookieHeader = () => accumulatedCookies
+      .flatMap((sc) => sc.split(/,(?=[^;]+?=)/))
+      .map((sc) => sc.split(';')[0]?.trim())
+      .filter(Boolean)
+      .join('; ');
+    
+    // 2) Ensure item is in cart (guest checkout works with session cookies)
+    if (productId) {
+      const addToCartUrl = `${wpUrl}/?add-to-cart=${encodeURIComponent(productId)}&quantity=${encodeURIComponent(quantity)}`;
+      console.log('Adding to cart:', addToCartUrl);
+      const addResp = await fetch(addToCartUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'User-Agent': 'JVS-Website/1.0',
+        },
+        redirect: 'follow',
+      });
+      mergeSetCookies(addResp);
+      console.log('Add-to-cart status:', addResp.status);
+    } else {
+      console.warn('No productId found in formData; proceeding without add-to-cart');
+    }
+    
+    // 3) Prefetch checkout to obtain nonces after cart exists
     console.log('Prefetching WordPress checkout page to obtain cookies and nonces:', checkoutUrl);
     const prefetchResponse = await fetch(checkoutUrl, {
       method: 'GET',
@@ -20,34 +68,12 @@ export async function POST(request: NextRequest) {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
         'User-Agent': 'JVS-Website/1.0',
+        ...(accumulatedCookies.length ? { 'Cookie': buildCookieHeader() } : {}),
       },
-      // Let redirects resolve normally to land on the live checkout form
       redirect: 'follow',
     });
-    
+    mergeSetCookies(prefetchResponse);
     const prefetchHtml = await prefetchResponse.text();
-    // Collect Set-Cookie headers into a Cookie header string (best effort)
-    const setCookieHeaders: string[] = [];
-    // Some runtimes expose getSetCookie()
-    // @ts-ignore
-    if (typeof (prefetchResponse.headers as any).getSetCookie === 'function') {
-      // @ts-ignore
-      const cookies = (prefetchResponse.headers as any).getSetCookie();
-      if (Array.isArray(cookies)) {
-        setCookieHeaders.push(...cookies);
-      }
-    }
-    // Fallback if multiple Set-Cookie are collapsed
-    const collapsedSetCookie = prefetchResponse.headers.get('set-cookie');
-    if (collapsedSetCookie) {
-      setCookieHeaders.push(collapsedSetCookie);
-    }
-    // Build Cookie header to send back to WP (strip attributes)
-    const cookieHeader = setCookieHeaders
-      .flatMap((sc) => sc.split(/,(?=[^;]+?=)/)) // split on commas that precede another cookie pair
-      .map((sc) => sc.split(';')[0]?.trim())
-      .filter(Boolean)
-      .join('; ');
     
     // Extract dynamic nonces from the checkout form
     const wpNonceMatch = prefetchHtml.match(/name="_wpnonce"\s+value="([^"]+)"/i);
@@ -56,14 +82,11 @@ export async function POST(request: NextRequest) {
     const wcCheckoutNonce = wcCheckoutNonceMatch ? wcCheckoutNonceMatch[1] : null;
     console.log('Extracted nonces from WP checkout:', { hasWpNonce: !!wpNonce, hasWcCheckoutNonce: !!wcCheckoutNonce });
     
-    // 2) Get the form data from the request
-    const formData = await request.formData();
-    
     console.log('Proxying checkout request to:', checkoutUrl);
     console.log('Form data keys:', Array.from(formData.keys()));
     console.log('Environment WP_GRAPHQL_URL:', process.env.WP_GRAPHQL_URL);
     
-    // 3) Convert FormData to URLSearchParams and inject dynamic nonces when available
+    // 4) Convert FormData to URLSearchParams and inject dynamic nonces when available
     const urlParams = new URLSearchParams();
     for (const [key, value] of formData.entries()) {
       urlParams.append(key, value.toString());
@@ -74,10 +97,14 @@ export async function POST(request: NextRequest) {
     if (wcCheckoutNonce) {
       urlParams.set('woocommerce-process-checkout-nonce', wcCheckoutNonce);
     }
+    // Terms acceptance, if required by store settings
+    if (!urlParams.has('terms')) {
+      urlParams.set('terms', 'on');
+    }
     
     console.log('URLSearchParams keys:', Array.from(urlParams.keys()));
     
-    // 4) Forward the request to WooCommerce AJAX checkout endpoint, including cookies and referer
+    // 5) Forward the request to WooCommerce AJAX checkout endpoint, including cookies and referer
     const response = await fetch(ajaxCheckoutUrl, {
       method: 'POST',
       body: urlParams,
@@ -88,7 +115,7 @@ export async function POST(request: NextRequest) {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
         'User-Agent': 'JVS-Website/1.0',
-        ...(cookieHeader ? { 'Cookie': cookieHeader } : {}),
+        ...(accumulatedCookies.length ? { 'Cookie': buildCookieHeader() } : {}),
         'Referer': checkoutUrl,
         'Origin': wpUrl,
         'X-Requested-With': 'XMLHttpRequest',
