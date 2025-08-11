@@ -6,27 +6,79 @@ export async function POST(request: NextRequest) {
   try {
     console.log('=== CHECKOUT API ROUTE START ===');
     
-    // Get the form data from the request
-    const formData = await request.formData();
-    
-    // Get WordPress site URL from environment
+    // Resolve WordPress base URL once
     const wpUrl = process.env.WP_GRAPHQL_URL?.replace('/graphql', '') || 'https://backend.jvs.org.uk';
     const checkoutUrl = `${wpUrl}/checkout`;
+    const ajaxCheckoutUrl = `${wpUrl}/?wc-ajax=checkout`;
+    
+    // 1) Prefetch checkout page to obtain cookies and dynamic nonces from WordPress
+    console.log('Prefetching WordPress checkout page to obtain cookies and nonces:', checkoutUrl);
+    const prefetchResponse = await fetch(checkoutUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'User-Agent': 'JVS-Website/1.0',
+      },
+      // Let redirects resolve normally to land on the live checkout form
+      redirect: 'follow',
+    });
+    
+    const prefetchHtml = await prefetchResponse.text();
+    // Collect Set-Cookie headers into a Cookie header string (best effort)
+    const setCookieHeaders: string[] = [];
+    // Some runtimes expose getSetCookie()
+    // @ts-ignore
+    if (typeof (prefetchResponse.headers as any).getSetCookie === 'function') {
+      // @ts-ignore
+      const cookies = (prefetchResponse.headers as any).getSetCookie();
+      if (Array.isArray(cookies)) {
+        setCookieHeaders.push(...cookies);
+      }
+    }
+    // Fallback if multiple Set-Cookie are collapsed
+    const collapsedSetCookie = prefetchResponse.headers.get('set-cookie');
+    if (collapsedSetCookie) {
+      setCookieHeaders.push(collapsedSetCookie);
+    }
+    // Build Cookie header to send back to WP (strip attributes)
+    const cookieHeader = setCookieHeaders
+      .flatMap((sc) => sc.split(/,(?=[^;]+?=)/)) // split on commas that precede another cookie pair
+      .map((sc) => sc.split(';')[0]?.trim())
+      .filter(Boolean)
+      .join('; ');
+    
+    // Extract dynamic nonces from the checkout form
+    const wpNonceMatch = prefetchHtml.match(/name="_wpnonce"\s+value="([^"]+)"/i);
+    const wcCheckoutNonceMatch = prefetchHtml.match(/name="woocommerce-process-checkout-nonce"\s+value="([^"]+)"/i);
+    const wpNonce = wpNonceMatch ? wpNonceMatch[1] : null;
+    const wcCheckoutNonce = wcCheckoutNonceMatch ? wcCheckoutNonceMatch[1] : null;
+    console.log('Extracted nonces from WP checkout:', { hasWpNonce: !!wpNonce, hasWcCheckoutNonce: !!wcCheckoutNonce });
+    
+    // 2) Get the form data from the request
+    const formData = await request.formData();
     
     console.log('Proxying checkout request to:', checkoutUrl);
     console.log('Form data keys:', Array.from(formData.keys()));
     console.log('Environment WP_GRAPHQL_URL:', process.env.WP_GRAPHQL_URL);
     
-    // Convert FormData to URLSearchParams for better compatibility
+    // 3) Convert FormData to URLSearchParams and inject dynamic nonces when available
     const urlParams = new URLSearchParams();
     for (const [key, value] of formData.entries()) {
       urlParams.append(key, value.toString());
     }
+    if (wpNonce) {
+      urlParams.set('_wpnonce', wpNonce);
+    }
+    if (wcCheckoutNonce) {
+      urlParams.set('woocommerce-process-checkout-nonce', wcCheckoutNonce);
+    }
     
     console.log('URLSearchParams keys:', Array.from(urlParams.keys()));
     
-    // Forward the request to WordPress WooCommerce checkout
-    const response = await fetch(checkoutUrl, {
+    // 4) Forward the request to WooCommerce AJAX checkout endpoint, including cookies and referer
+    const response = await fetch(ajaxCheckoutUrl, {
       method: 'POST',
       body: urlParams,
       headers: {
@@ -36,6 +88,10 @@ export async function POST(request: NextRequest) {
         'Cache-Control': 'no-cache',
         'Pragma': 'no-cache',
         'User-Agent': 'JVS-Website/1.0',
+        ...(cookieHeader ? { 'Cookie': cookieHeader } : {}),
+        'Referer': checkoutUrl,
+        'Origin': wpUrl,
+        'X-Requested-With': 'XMLHttpRequest',
       },
       redirect: 'manual', // Don't follow redirects automatically
     });
