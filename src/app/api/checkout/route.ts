@@ -5,8 +5,8 @@ export const runtime = 'edge';
 export async function POST(request: NextRequest) {
   try {
     console.log('=== CHECKOUT API ROUTE START ===');
-    // Resolve WordPress base URL once
-    const wpUrl = process.env.WP_GRAPHQL_URL?.replace('/graphql', '') || 'https://backend.jvs.org.uk';
+    // Resolve WordPress base URL once (avoid process.env in Edge runtime)
+    const wpUrl = 'https://backend.jvs.org.uk';
     const checkoutUrl = `${wpUrl}/checkout`;
     const ajaxCheckoutUrl = `${wpUrl}/?wc-ajax=checkout`;
     
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     
     console.log('Proxying checkout request to:', checkoutUrl);
     console.log('Form data keys:', Array.from(formData.keys()));
-    console.log('Environment WP_GRAPHQL_URL:', process.env.WP_GRAPHQL_URL);
+    // Avoid accessing process.env in Edge runtime
     
     // 4) Convert FormData to URLSearchParams and inject dynamic nonces when available
     const urlParams = new URLSearchParams();
@@ -100,6 +100,27 @@ export async function POST(request: NextRequest) {
     // Terms acceptance, if required by store settings
     if (!urlParams.has('terms')) {
       urlParams.set('terms', 'on');
+    }
+
+    // Normalize billing fields that some stores require
+    if (!urlParams.has('billing_state')) {
+      urlParams.set('billing_state', '');
+    }
+    if (!urlParams.has('billing_address_2')) {
+      urlParams.set('billing_address_2', '');
+    }
+
+    // If a Stripe PaymentMethod was created on the client, map it for WooPayments as well
+    const pmId = urlParams.get('stripe_payment_method') || urlParams.get('stripe_payment_method_id') || urlParams.get('wc-stripe-payment-method');
+    if (pmId) {
+      // Prefer WooPayments gateway since many sites enable it instead of classic Stripe
+      urlParams.set('payment_method', 'woocommerce_payments');
+      urlParams.set('wcpay_payment_method', pmId);
+      urlParams.set('wcpay_selected_upe_payment_type', 'card');
+      // Some themes check this flag to store new method
+      if (!urlParams.has('wcpay_save_payment_method')) {
+        urlParams.set('wcpay_save_payment_method', 'no');
+      }
     }
     
     console.log('URLSearchParams keys:', Array.from(urlParams.keys()));
@@ -129,6 +150,23 @@ export async function POST(request: NextRequest) {
     // Get the response text
     const responseText = await response.text();
     console.log('WordPress response text (first 500 chars):', responseText.substring(0, 500));
+
+    // TEMP DIAGNOSTIC: If Woo returns an error status, surface first ~800 chars for inspection
+    if (!response.ok) {
+      try {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const json = JSON.parse(responseText);
+          const raw = typeof json.messages === 'string' ? json.messages : JSON.stringify(json);
+          const preview = raw.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 800);
+          return NextResponse.json({ error: 'Woo checkout failure', status: response.status, preview }, { status: 502 });
+        }
+      } catch (_) {
+        // fall through
+      }
+      const preview = responseText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 800);
+      return NextResponse.json({ error: 'Woo checkout failure', status: response.status, preview }, { status: 502 });
+    }
     
     // Check if we got a redirect to order received page
     if (response.status === 302 || response.status === 301) {
@@ -154,12 +192,8 @@ export async function POST(request: NextRequest) {
     } else if (responseText.includes('woocommerce-error')) {
       // Error - return error response
       console.log('Found woocommerce-error in response');
-      return new NextResponse(responseText, {
-        status: 400,
-        headers: {
-          'Content-Type': 'text/html',
-        },
-      });
+      const preview = responseText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 800);
+      return NextResponse.json({ error: 'Woo checkout failure', status: 400, preview }, { status: 502 });
     } else {
       // Unknown response - return as-is
       console.log('Unknown response, returning as-is with status:', response.status);

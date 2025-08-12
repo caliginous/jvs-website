@@ -23,6 +23,12 @@ export default {
     
     console.log(`🚀 [CUSTOM WORKER] Request URL: ${url.pathname}`);
     
+    // EARLY GUARD: ensure /api/checkout is always handled here
+    if (url.pathname.startsWith('/api/checkout')) {
+      console.log('🧾 [CUSTOM WORKER] Early route: Handling Checkout API via worker');
+      return await handleCheckoutAPI(request, env);
+    }
+    
     // Global CORS preflight handler for all API routes - Cache-Control fix v2
     if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/')) {
       console.log('🌐 [CUSTOM WORKER] Handling global CORS preflight - Cache-Control fix v2');
@@ -41,6 +47,12 @@ export default {
       if (url.pathname === '/api/stripe-config' || url.pathname === '/api/stripe-config/' || url.pathname === '/api/stripe-config-v5' || url.pathname === '/api/stripe-config-v5/') {
         console.log('💳 [CUSTOM WORKER] Handling Stripe config API (v5 cache-bust)');
       return await handleStripeConfig(request, env);
+    }
+    
+    // Handle Checkout API directly in the worker to avoid Edge function errors
+    if (url.pathname.startsWith('/api/checkout')) {
+      console.log('🧾 [CUSTOM WORKER] Handling Checkout API via worker');
+      return await handleCheckoutAPI(request, env);
     }
     
     // Handle create payment intent API
@@ -107,8 +119,8 @@ export default {
       if (url.pathname === '/api/venue-hire' || url.pathname === '/api/venue-hire/') {
       console.log('🏢 [CUSTOM WORKER] Handling venue hire API');
       return await handleVenueHireAPI(request, env);
-      }
-      
+    }
+    
     // Handle Magazine API routes
     if (url.pathname === '/api/list-magazines' || url.pathname === '/api/list-magazines/') {
       console.log('📚 [CUSTOM WORKER] Handling list-magazines API');
@@ -157,8 +169,40 @@ export default {
     
     // CRITICAL FIX: Delegate unhandled /api/* routes back to Next.js Edge Functions
     if (url.pathname.startsWith('/api/')) {
-      console.log(`🔁 [CUSTOM WORKER] API passthrough to Next.js: ${url.pathname}`);
-      return env.ASSETS.fetch(request); // Delegate to .func.js handler
+      // Safety: never passthrough checkout; ensure worker handles it
+      if (url.pathname.startsWith('/api/checkout')) {
+        console.log('🧾 [CUSTOM WORKER] Safety route: Handling Checkout API via worker');
+        return await handleCheckoutAPI(request, env);
+      }
+      const handled = new Set([
+        '/api/checkout',
+        '/api/checkout/',
+        '/api/stripe-config',
+        '/api/stripe-config/',
+        '/api/stripe-config-v5',
+        '/api/stripe-config-v5/',
+        '/api/create-payment-intent',
+        '/api/create-payment-intent/',
+        '/api/graphql', '/api/graphql/',
+        '/api/graphql-v2', '/api/graphql-v2/',
+        '/api/graphql-v3', '/api/graphql-v3/',
+        '/api/graphql-v4', '/api/graphql-v4/',
+        '/api/graphql-v5', '/api/graphql-v5/'
+      ]);
+      if (!handled.has(url.pathname)) {
+        console.log(`🔁 [CUSTOM WORKER] API passthrough to Next.js: ${url.pathname}`);
+        try {
+          const assetsFetch = env?.ASSETS?.fetch;
+          if (typeof assetsFetch === 'function') {
+            return assetsFetch.call(env.ASSETS, request);
+          }
+        } catch (_) { /* fall through */ }
+        // Safe fallback instead of throwing 1101
+        return new Response(
+          JSON.stringify({ error: 'Passthrough unavailable' }),
+          { status: 502, headers: { 'Content-Type': 'application/json', ...getCorsHeaders(request) } }
+        );
+      }
     }
     
     // For all other routes, return a 404 for now (Next.js routing issue)
@@ -253,6 +297,273 @@ async function handleStripeConfig(request, env) {
         }
       }
     );
+  }
+}
+
+async function handleCheckoutAPI(request, env) {
+  try {
+    const wpUrl = 'https://backend.jvs.org.uk';
+    const checkoutUrl = `${wpUrl}/checkout`;
+    const ajaxCheckoutUrl = `${wpUrl}/?wc-ajax=checkout`;
+
+    // CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          ...getCorsHeaders(request),
+          'Access-Control-Max-Age': '86400'
+        }
+      });
+    }
+
+    if (request.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { 'Content-Type': 'application/json', ...getCorsHeaders(request) }
+      });
+    }
+
+    // Helpers to capture and replay cookies across requests
+    let accumulatedCookies = [];
+    const mergeSetCookies = (response) => {
+      const cookies = [];
+      try {
+        if (typeof response.headers.getSetCookie === 'function') {
+          const arr = response.headers.getSetCookie();
+          if (Array.isArray(arr)) cookies.push(...arr);
+        }
+      } catch (_) { /* ignore */ }
+      const single = response.headers.get('set-cookie');
+      if (single) cookies.push(single);
+      if (cookies.length) accumulatedCookies.push(...cookies);
+    };
+    const buildCookieHeader = () => accumulatedCookies
+      .flatMap((sc) => sc.split(/,(?=[^;]+?=)/))
+      .map((sc) => sc.split(';')[0]?.trim())
+      .filter(Boolean)
+      .join('; ');
+
+    // Parse incoming form data
+    const contentType = request.headers.get('content-type') || '';
+    let urlParams = new URLSearchParams();
+    if (contentType.includes('application/x-www-form-urlencoded')) {
+      const raw = await request.text();
+      urlParams = new URLSearchParams(raw);
+    } else if (contentType.includes('multipart/form-data')) {
+      const fd = await request.formData();
+      for (const [k, v] of fd.entries()) urlParams.append(k, String(v));
+    } else {
+      // Best-effort: try to read as form-data anyway
+      try {
+        const fd = await request.formData();
+        for (const [k, v] of fd.entries()) urlParams.append(k, String(v));
+      } catch (_) {}
+    }
+
+    // Ensure the cart/session exists: derive first product and quantity
+    const productId = Array.from(urlParams.entries()).find(([k]) => /cart_item\[\d+\]\[product_id\]/.test(k))?.[1] || urlParams.get('product_id') || urlParams.get('eventId');
+    const quantity = Array.from(urlParams.entries()).find(([k]) => /cart_item\[\d+\]\[quantity\]/.test(k))?.[1] || urlParams.get('quantity') || '1';
+    if (productId) {
+      const addToCartUrl = `${wpUrl}/?add-to-cart=${encodeURIComponent(productId)}&quantity=${encodeURIComponent(quantity)}`;
+      console.log('🛒 [CHECKOUT] Add to cart:', addToCartUrl);
+      // First request: manual redirect to capture Set-Cookie
+      const addResp = await fetch(addToCartUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'User-Agent': 'JVS-Website/1.0'
+        },
+        redirect: 'manual'
+      });
+      mergeSetCookies(addResp);
+      console.log('🛒 [CHECKOUT] Add-to-cart status:', addResp.status);
+      const location = addResp.headers.get('location');
+      // Follow redirect with cookies to establish session fully
+      if (location) {
+        try {
+          const followUrl = location.startsWith('http') ? location : `${wpUrl}${location}`;
+          const followResp = await fetch(followUrl, {
+            method: 'GET',
+            headers: {
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache',
+              'User-Agent': 'JVS-Website/1.0',
+              ...(accumulatedCookies.length ? { 'Cookie': buildCookieHeader() } : {})
+            },
+            redirect: 'follow'
+          });
+          mergeSetCookies(followResp);
+        } catch (_) {}
+      }
+    } else {
+      console.log('🛒 [CHECKOUT] No productId found in request');
+    }
+
+    // HEADLESS: Use REST + Stripe directly (skip Woo AJAX checkout)
+    const headlessResp = await restStripeFallback(urlParams, env);
+    if (headlessResp) {
+      return new Response(await headlessResp.text(), {
+        status: headlessResp.status,
+        headers: { 'Content-Type': 'application/json', ...getCorsHeaders(request) }
+      });
+    }
+
+    // If we reached here, headless prerequisites are missing (e.g., secrets or payment method)
+    return new Response(
+      JSON.stringify({
+        error: 'Headless checkout unavailable',
+        reason: 'Missing STRIPE_SECRET_KEY or WooCommerce REST credentials, or no payment method provided.'
+      }),
+      { status: 503, headers: { 'Content-Type': 'application/json', ...getCorsHeaders(request) } }
+    );
+
+  } catch (error) {
+    console.error('❌ [CHECKOUT API] Error:', error);
+    return new Response(JSON.stringify({ error: 'Checkout processing failed' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json', ...getCorsHeaders(request) }
+    });
+  }
+}
+
+// Fallback flow: create Woo order via REST and capture payment via Stripe secret
+async function restStripeFallback(urlParams, env) {
+  try {
+    const wpUrl = 'https://backend.jvs.org.uk';
+    const pmId = urlParams.get('stripe_payment_method') || urlParams.get('stripe_payment_method_id') || urlParams.get('wc-stripe-payment-method');
+    if (!pmId) {
+      return new Response(JSON.stringify({ error: 'Missing Stripe payment method id' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    const secrets = env && env.JVS_SECRETS ? env.JVS_SECRETS : undefined;
+    if (!secrets) {
+      return new Response(JSON.stringify({ error: 'Secrets binding unavailable' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
+    }
+    const [wcKey, wcSecret, stripeSecretKey] = await Promise.all([
+      secrets.get('WC_CONSUMER_KEY'),
+      secrets.get('WC_CONSUMER_SECRET'),
+      secrets.get('STRIPE_SECRET_KEY')
+    ]);
+    if (!wcKey || !wcSecret || !stripeSecretKey) {
+      return new Response(JSON.stringify({ error: 'Required secrets missing', have: { wcKey: !!wcKey, wcSecret: !!wcSecret, stripeSecretKey: !!stripeSecretKey } }), { status: 503, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    // Ensure the provided PaymentMethod belongs to the same Stripe account as our secret key
+    const pmCheck = await fetch(`https://api.stripe.com/v1/payment_methods/${encodeURIComponent(pmId)}`, {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${stripeSecretKey}` }
+    });
+    if (!pmCheck.ok) {
+      let details = '';
+      try { details = await pmCheck.text(); } catch (_) {}
+      return new Response(
+        JSON.stringify({ error: 'Stripe PaymentMethod not found for this secret key (account mismatch likely)', status: pmCheck.status, details: details?.slice(0, 800) }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const productId = urlParams.get('product_id') || urlParams.get('eventId');
+    const quantity = urlParams.get('quantity') || '1';
+
+    // Parse ticket selections if present
+    let selections = [];
+    const tSelRaw = urlParams.get('tSel');
+    if (tSelRaw) {
+      try {
+        let decoded = tSelRaw;
+        try { decoded = decodeURIComponent(tSelRaw); } catch (_) {}
+        selections = JSON.parse(decoded);
+        if (!Array.isArray(selections)) selections = [];
+      } catch (_) {
+        try {
+          selections = JSON.parse(tSelRaw);
+          if (!Array.isArray(selections)) selections = [];
+        } catch (_) { selections = []; }
+      }
+    }
+
+    const orderData = {
+      payment_method: 'stripe',
+      set_paid: false,
+      billing: {
+        first_name: urlParams.get('billing_first_name') || '',
+        last_name: urlParams.get('billing_last_name') || '',
+        email: urlParams.get('billing_email') || '',
+        phone: urlParams.get('billing_phone') || '',
+        address_1: urlParams.get('billing_address_1') || '',
+        address_2: urlParams.get('billing_address_2') || '',
+        city: urlParams.get('billing_city') || '',
+        postcode: urlParams.get('billing_postcode') || '',
+        country: urlParams.get('billing_country') || '',
+        state: urlParams.get('billing_state') || ''
+      },
+      line_items: productId ? [ { product_id: parseInt(String(productId), 10) || 0, quantity: parseInt(String(quantity), 10) || 1 } ] : [],
+      meta_data: [
+        { key: '_stripe_payment_method_id', value: pmId },
+        { key: '_stripe_intent_id', value: '' },
+        ...(selections.length ? [{ key: 'jvs_ticket_selections', value: JSON.stringify(selections) }] : [])
+      ]
+    };
+    const wcAuthQS = `consumer_key=${encodeURIComponent(wcKey)}&consumer_secret=${encodeURIComponent(wcSecret)}`;
+    const basic = (typeof btoa === 'function') ? btoa(`${wcKey}:${wcSecret}`) : '';
+    const commonWooHeaders = {
+      'Content-Type': 'application/json',
+      ...(basic ? { 'Authorization': `Basic ${basic}` } : {}),
+      'Accept': 'application/json',
+      'User-Agent': 'JVS-Website/1.0',
+      'Origin': 'https://jvs.org.uk',
+      'Referer': 'https://jvs.org.uk/checkout'
+    };
+    const orderResp = await fetch(`${wpUrl}/wp-json/wc/v3/orders?${wcAuthQS}`, {
+      method: 'POST',
+      headers: commonWooHeaders,
+      body: JSON.stringify(orderData)
+    });
+    if (!orderResp.ok) {
+      let details = '';
+      try { details = await orderResp.text(); } catch (_) {}
+      return new Response(JSON.stringify({ error: 'Woo order creation failed', status: orderResp.status, details: details?.slice(0, 1500), request: orderData }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    const order = await orderResp.json();
+
+    const origin = 'https://jvs.org.uk';
+
+    // Compute amount from selections if provided; else use order total
+    let amountCents = Math.max(0, Math.round(Number(order.total) * 100));
+    if (selections.length) {
+      try {
+        const calc = selections.reduce((sum, s) => sum + (Number(s.qty || 0) * (typeof s.price === 'string' ? parseFloat(String(s.price).replace(/[^0-9.]/g, '')) : Number(s.price || 0))), 0);
+        if (calc > 0) amountCents = Math.round(calc * 100);
+      } catch (_) {}
+    }
+
+    const piResp = await fetch('https://api.stripe.com/v1/payment_intents', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${stripeSecretKey}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ amount: String(amountCents), currency: order.currency || 'gbp', payment_method: pmId, confirm: 'true', return_url: `${origin}/checkout/success`, 'metadata[order_id]': String(order.id), 'metadata[customer_email]': urlParams.get('billing_email') || '', ...(selections.length ? { 'metadata[ticket_selections]': JSON.stringify(selections) } : {}) })
+    });
+    if (!piResp.ok) {
+      let errJson = null; let errText = '';
+      try { errJson = await piResp.json(); } catch (_) { try { errText = await piResp.text(); } catch (_) {} }
+      try { await fetch(`${wpUrl}/wp-json/wc/v3/orders/${order.id}?${wcAuthQS}`, { method: 'PUT', headers: commonWooHeaders, body: JSON.stringify({ status: 'failed' }) }); } catch (_) {}
+      return new Response(JSON.stringify({ error: 'Payment processing failed', stripe: errJson || errText }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    const paymentIntent = await piResp.json();
+    if (paymentIntent && (paymentIntent.status === 'requires_action' || paymentIntent.status === 'requires_source_action')) {
+      // SCA required; let the frontend complete it with client_secret
+      return new Response(JSON.stringify({ requires_action: true, client_secret: paymentIntent.client_secret, orderId: order.id }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    if (!paymentIntent || paymentIntent.status !== 'succeeded') {
+      try { await fetch(`${wpUrl}/wp-json/wc/v3/orders/${order.id}?${wcAuthQS}`, { method: 'PUT', headers: commonWooHeaders, body: JSON.stringify({ status: 'failed' }) }); } catch (_) {}
+      return new Response(JSON.stringify({ error: 'Payment did not succeed', status: paymentIntent?.status }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    try { await fetch(`${wpUrl}/wp-json/wc/v3/orders/${order.id}?${wcAuthQS}`, { method: 'PUT', headers: commonWooHeaders, body: JSON.stringify({ status: 'processing', meta_data: [ { key: '_stripe_intent_id', value: paymentIntent.id } ] }) }); } catch (_) {}
+    return new Response(JSON.stringify({ redirect: '/checkout/success', orderId: order.id }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'Unexpected checkout error', message: e?.message || String(e) }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }
 
@@ -443,6 +754,19 @@ async function handleGraphQLAPI(request, env) {
 
     // Parse the request body
     const body = await request.json();
+
+    // Forward WooCommerce session if present (from header or cookie)
+    let incomingSession = request.headers.get('woocommerce-session') || '';
+    if (!incomingSession) {
+      const cookieHeader = request.headers.get('cookie') || '';
+      const match = cookieHeader.match(/(?:^|; )woo-session=([^;]+)/i);
+      if (match && match[1]) {
+        incomingSession = decodeURIComponent(match[1]);
+        if (incomingSession && !/^Session\s+/i.test(incomingSession)) {
+          incomingSession = `Session ${incomingSession}`;
+        }
+      }
+    }
     
     // Forward the request to the WordPress GraphQL endpoint
     const wpGraphQLUrl = 'https://backend.jvs.org.uk/graphql';
@@ -457,7 +781,8 @@ async function handleGraphQLAPI(request, env) {
         'Accept': 'application/json, text/plain, */*',
         'Accept-Language': 'en-US,en;q=0.9',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
+        ...(incomingSession ? { 'woocommerce-session': incomingSession } : {})
       },
       body: JSON.stringify(body)
     });
@@ -465,13 +790,29 @@ async function handleGraphQLAPI(request, env) {
     const data = await response.json();
     
     console.log('✅ [GRAPHQL API] Successfully forwarded request');
-    
+
+    // Persist Woo session back to the client
+    const outgoingHeaders = {
+      'Content-Type': 'application/json',
+      ...getCorsHeaders(request)
+    };
+
+    const wpWooSession = response.headers.get('woocommerce-session');
+    if (wpWooSession && wpWooSession !== 'false') {
+      try {
+        outgoingHeaders['woocommerce-session'] = wpWooSession;
+        // Also set a cookie accessible to the storefront
+        const bare = wpWooSession.replace(/^Session\s+/i, '');
+        const domain = 'jvs.org.uk';
+        const cookie = `woo-session=${encodeURIComponent(bare)}; Path=/; Max-Age=2419200; SameSite=None; Secure; Domain=${domain}`;
+        // Multiple Set-Cookie headers aren't supported via object; use a single one
+        outgoingHeaders['Set-Cookie'] = cookie;
+      } catch (_) {}
+    }
+
     return new Response(JSON.stringify(data), {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        ...getCorsHeaders(request)
-      }
+      headers: outgoingHeaders
     });
   } catch (error) {
     console.error('❌ [GRAPHQL API] Error:', error);
@@ -1367,8 +1708,9 @@ function generateTicketsHTML(event, slug) {
             const totalTickets = quantities.reduce((sum, qty) => sum + qty, 0);
             if (totalTickets === 0) return;
             
-            // Redirect to checkout with the event ID and total quantity
-            const checkoutUrl = \`/checkout?eventId=${event.id}&quantity=\${totalTickets}\`;
+            const selection = (ticketTypes || []).map((t, idx) => ({ label: t.label, price: t.price, qty: quantities[idx] || 0 })).filter(s => s.qty > 0);
+            const tSel = encodeURIComponent(JSON.stringify(selection));
+            const checkoutUrl = \`/checkout?eventId=${event.id}&quantity=\${totalTickets}&tSel=\${tSel}\`;
             window.location.href = checkoutUrl;
         }
         
@@ -1934,8 +2276,9 @@ function generateUnifiedEventHTML(event, slug) {
             const totalTickets = quantities.reduce((sum, qty) => sum + qty, 0);
             if (totalTickets === 0) return;
             
-            // Redirect to checkout with the event ID and total quantity
-            const checkoutUrl = \`/checkout?eventId=${event.id}&quantity=\${totalTickets}\`;
+            const selection = (ticketTypes || []).map((t, idx) => ({ label: t.label, price: t.price, qty: quantities[idx] || 0 })).filter(s => s.qty > 0);
+            const tSel = encodeURIComponent(JSON.stringify(selection));
+            const checkoutUrl = \`/checkout?eventId=${event.id}&quantity=\${totalTickets}&tSel=\${tSel}\`;
             window.location.href = checkoutUrl;
         }
         

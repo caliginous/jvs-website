@@ -104,6 +104,7 @@ function CheckoutForm() {
   
   const [isLoadingEvent, setIsLoadingEvent] = useState(true);
   const [checkoutItems, setCheckoutItems] = useState<CheckoutItem[]>([]);
+  const [ticketSelections, setTicketSelections] = useState<Array<{ label: string; price: number | string; qty: number }>>([]);
   const [stripeError, setStripeError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [form, setForm] = useState({
@@ -129,15 +130,40 @@ function CheckoutForm() {
   useEffect(() => {
     const fetchEventData = async () => {
       const eventId = searchParams.get('eventId');
-      const quantity = searchParams.get('quantity');
+      const tSelRaw = searchParams.get('tSel');
 
-      if (eventId && quantity) {
+      if (eventId) {
         setIsLoadingEvent(true);
         try {
           const event = await getEventForCheckout(eventId);
-          if (event) {
-            const checkoutItem = convertEventToCheckoutItem(event, parseInt(quantity));
+          let selection: Array<{ label: string; price: number | string; qty: number }> = [];
+          if (tSelRaw) {
+            // Robustly decode and parse tSel; tolerate single/double encoding
+            let decoded = tSelRaw;
+            try { decoded = decodeURIComponent(tSelRaw); } catch { /* no-op */ }
+            try {
+              selection = JSON.parse(decoded);
+            } catch {
+              try { selection = JSON.parse(tSelRaw); } catch { selection = []; }
+            }
+            if (!Array.isArray(selection)) selection = [];
+          }
+
+          setTicketSelections(selection);
+          const totalQty = selection.length > 0 ? selection.reduce((sum, s) => sum + (Number(s.qty) || 0), 0) : Number(searchParams.get('quantity') || 0) || 0;
+
+          if (event && totalQty > 0) {
+            const checkoutItem = convertEventToCheckoutItem(event, totalQty);
             setCheckoutItems([checkoutItem]);
+          } else if (event) {
+            // Fallback to quantity param if provided
+            const qtyParam = Number(searchParams.get('quantity') || 0) || 0;
+            if (qtyParam > 0) {
+              const checkoutItem = convertEventToCheckoutItem(event, qtyParam);
+              setCheckoutItems([checkoutItem]);
+            } else {
+              router.push('/events');
+            }
           } else {
             router.push('/events');
           }
@@ -160,6 +186,12 @@ function CheckoutForm() {
   };
 
   const getTotalPrice = () => {
+    if (ticketSelections.length > 0) {
+      return ticketSelections.reduce((total, s) => {
+        const price = typeof s.price === 'string' ? parseFloat(String(s.price).replace(/[^0-9.]/g, '')) : Number(s.price || 0);
+        return total + (price * (Number(s.qty) || 0));
+      }, 0);
+    }
     return checkoutItems.reduce((total, item) => {
       const price = parseFloat(item.price.replace(/[^0-9.]/g, ''));
       return total + (price * item.quantity);
@@ -240,11 +272,20 @@ function CheckoutForm() {
       formData.append('shipping_country', form.country);
       
       // Order items
-      checkoutItems.forEach((item, index) => {
-        formData.append(`cart_item_key[${index}]`, item.id);
-        formData.append(`cart_item[${index}][product_id]`, item.id);
-        formData.append(`cart_item[${index}][quantity]`, item.quantity.toString());
-      });
+      const eventId = searchParams.get('eventId') || (checkoutItems[0]?.id ?? '');
+      const totalQty = ticketSelections.length > 0 ? ticketSelections.reduce((sum, s) => sum + (Number(s.qty) || 0), 0) : (checkoutItems[0]?.quantity ?? 1);
+      if (eventId) {
+        formData.append(`cart_item_key[0]`, String(eventId));
+        formData.append(`cart_item[0][product_id]`, String(eventId));
+        formData.append(`cart_item[0][quantity]`, String(totalQty));
+        formData.append('eventId', String(eventId));
+        formData.append('quantity', String(totalQty));
+      }
+
+      // Forward ticket selections to the API/worker
+      if (ticketSelections.length > 0) {
+        formData.append('tSel', JSON.stringify(ticketSelections));
+      }
       
       // WooCommerce nonce and other required fields
       formData.append('woocommerce-process-checkout-nonce', 'woocommerce-process-checkout-nonce');
@@ -255,46 +296,34 @@ function CheckoutForm() {
       console.log('Submitting to WooCommerce checkout with payment method:', paymentMethod.id);
       console.log('Form data keys:', Array.from(formData.keys()));
 
-      // Submit to our API route which proxies to WooCommerce checkout
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        body: formData,
-      });
-
-      console.log('WooCommerce checkout response status:', response.status);
-      console.log('WooCommerce checkout response headers:', Object.fromEntries(response.headers.entries()));
-
-      if (response.ok) {
-        const responseText = await response.text();
-        console.log('WooCommerce checkout response:', responseText.substring(0, 500) + '...');
-        
-        // Check if we got redirected to success page or order received
-        if (response.url.includes('order-received') || responseText.includes('order-received')) {
-          // Extract order details from response
-          const orderMatch = responseText.match(/order-received\/(\d+)/);
-          const orderId = orderMatch ? orderMatch[1] : 'unknown';
-          
-          sessionStorage.setItem('orderDetails', JSON.stringify({
-            orderId: orderId,
-            orderNumber: orderId,
-            total: getTotalPrice().toFixed(2),
-            eventName: checkoutItems[0]?.name
-          }));
-          
-          router.push('/checkout/success');
-        } else if (responseText.includes('error') || responseText.includes('failed')) {
-          // Extract error message from response
-          const errorMatch = responseText.match(/<div[^>]*class="[^"]*woocommerce-error[^"]*"[^>]*>([\s\S]*?)<\/div>/);
-          const errorMessage = errorMatch ? errorMatch[1].replace(/<[^>]*>/g, '').trim() : 'Payment processing failed';
-          alert(`Payment failed: ${errorMessage}`);
-        } else {
-          // Unknown response - redirect to success for now
-          router.push('/checkout/success');
-        }
-      } else {
-        console.error('WooCommerce checkout failed with status:', response.status);
-        alert('Payment processing failed. Please try again.');
+      // Submit to our API route (headless flow)
+      const response = await fetch('/api/checkout', { method: 'POST', body: formData });
+      console.log('Checkout API status:', response.status);
+      let data: any = null;
+      try { data = await response.json(); } catch (_) { /* ignore */ }
+      if (!response.ok) {
+        console.error('Checkout failed payload:', data);
+        const msg = data?.error || data?.message || 'Payment processing failed';
+        alert(msg);
+        return;
       }
+      // Success paths
+      if (data?.requires_action && data?.client_secret) {
+        const actionRes = await stripe.handleCardAction(data.client_secret);
+        if (actionRes.error) {
+          alert(actionRes.error.message || '3D Secure authentication failed');
+          return;
+        }
+        // If SCA succeeds, proceed to success (order already created server-side)
+        router.push('/checkout/success');
+        return;
+      }
+      if (data?.redirect) {
+        router.push(data.redirect);
+        return;
+      }
+      // Fallback
+      router.push('/checkout/success');
 
     } catch (error) {
       console.error('Checkout error:', error);
@@ -438,9 +467,32 @@ function CheckoutForm() {
                       <h3 className="font-medium text-gray-900">{item.name}</h3>
                       <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                     </div>
-                    <span className="font-medium text-gray-900">£{item.price}</span>
+                    {/* If ticket selections exist, omit single-price display to avoid confusion */}
+                    {ticketSelections.length === 0 && (
+                      <span className="font-medium text-gray-900">£{item.price}</span>
+                    )}
                   </div>
                 ))}
+
+                {ticketSelections.length > 0 && (
+                  <div className="mt-2 border-t border-gray-200 pt-3">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Tickets</h4>
+                    <div className="space-y-1">
+                      {ticketSelections.map((s, idx) => {
+                        const unit = typeof s.price === 'string' ? parseFloat(String(s.price).replace(/[^0-9.]/g, '')) : Number(s.price || 0);
+                        const qty = Number(s.qty) || 0;
+                        if (!qty || !unit) return null;
+                        const line = (unit * qty).toFixed(2);
+                        return (
+                          <div key={idx} className="flex justify-between text-sm text-gray-700">
+                            <span>{s.label} × {qty} @ £{unit.toFixed(2)}</span>
+                            <span>£{line}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold text-gray-900">Total</span>
@@ -494,9 +546,18 @@ function CheckoutForm() {
             <button
               type="submit"
               disabled={isProcessing || !stripe}
-              className="w-full bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+              className={[
+                'w-full font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center',
+                // Use our global palette classes so the button is never white-on-white
+                'bg-deep-green text-white',
+                !isProcessing && 'hover:bg-primary-green',
+                (isProcessing || !stripe) && 'opacity-80 cursor-not-allowed'
+              ].filter(Boolean).join(' ')}
             >
-              {isProcessing ? 'Processing Payment...' : `Pay £${getTotalPrice().toFixed(2)} with Stripe`}
+              {isProcessing && (
+                <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" aria-hidden="true" />
+              )}
+              {isProcessing ? 'Processing Payment…' : `Pay £${getTotalPrice().toFixed(2)} with Stripe`}
             </button>
 
             <p className="text-sm text-gray-600 text-center mt-4">
