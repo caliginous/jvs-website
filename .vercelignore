@@ -1,0 +1,46 @@
+# Backup files
+*.zip
+jvs-vercel-tessera-backup-*.zip
+tessera-*.zip
+
+# Node modules
+node_modules/
+
+# Build cache
+.next/cache/
+.next/server/
+
+# Sanity setup
+sanity-setup/
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Test files
+tests/
+__tests__/
+*.test.*
+*.spec.*
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp

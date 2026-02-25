@@ -1,0 +1,35 @@
+===============================================================================
+JEWISHVEGV2 — LOCKED DECISIONS SUMMARY
+===============================================================================
+1. Renderer: Next-on-Pages Edge Routes own all public HTML
+2. Route ownership: Next owns HTML; other workers on separate subdomain/prefix
+3. Response mode: Full-document responses (streaming later per-route if needed)
+4. D1 content format: Canonical JSON + derived sanitized HTML
+5. ID strategy: Primary key "source:source_id" (+ separate source & source_id cols)
+6. Consistency: Public reads = replicas; Preview/Admin = primary via D1 Sessions
+7. D1 replicas: Enabled
+8. WP updates: Cron polling via WPGraphQL (no WP changes)
+9. Sanity dataset: Single dataset (production), test via staging env bindings
+10. Queues: Single "jvs-ingest" for all sources, batch size ~50
+11. Idempotency: Upsert only if `updated_at` is newer
+12. KV cache: Enabled for public (TTL 30–60s); bypass preview/admin
+13. Invalidation: Time-based TTL only (no targeted purge in v1)
+14. Security: HMAC verify Sanity; WP GraphQL token auth via Wrangler secrets
+15. Preview auth: No auth (link-accessible) but force primary for freshness
+16. Sanitization: Hybrid—raw JSON + sanitized HTML column
+17. Media: Copy to R2 and serve via Cloudflare CDN; fall back to source URL on failure
+18. Migrations: Numbered SQL files; applied with Wrangler in CI/CD
+19. Versioning fields: updated_at, version (auto-increment), published_at
+20. Environments: Separate D1/KV/Queues per env (Dev/Staging/Prod)
+21. Secrets: Store via `wrangler secret put`
+22. Deploy order: DB -> Consumer -> Ingest -> Renderer
+23. Backfill: Dedicated script for WP/Sanity history before go-live
+24. Monitoring: Workers logs + Queues DLQ + D1 error alerts
+25. Indexing: Index slug, type, updated_at; FTS deferred
+26. Burst handling: Use Queues + batch writes to D1
+27. Freshness SLO: < 60s end-to-end
+28. WP GraphQL: Token-protected endpoint
+29. Data model: Unified `content` table with `type`, + join tables
+30. Deletes: Soft delete with 30-day purge
+31. Ownership: Platform owns schema/ingest; Web team owns rendering
+32. DoD: E2E + tests + monitoring + docs + rollback playbook

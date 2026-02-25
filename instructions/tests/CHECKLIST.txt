@@ -1,0 +1,48 @@
+===============================================================================
+JEWISHVEGV2 — TEST & VERIFICATION CHECKLIST
+===============================================================================
+
+ROUTING
+- [ ] Next owns all HTML routes; ingest/cron/consumer on separate subdomain/prefix
+- [ ] No catch-all custom worker overlaps Next
+- [ ] Assets served by Next build (no ASSETS.fetch in custom workers)
+
+DYNAMIC vs STATIC
+- [ ] Dynamic routes export runtime='edge' and dynamic='force-dynamic'
+- [ ] Public pages return cache-control: no-store
+- [ ] Preview routes use first-primary D1 session
+
+CONTENT FLOW
+- [ ] Sanity publish -> webhook queued -> consumer upsert -> page live (<60s)
+- [ ] WP modified -> cron queued -> consumer upsert -> page live (<60s)
+- [ ] KV cache (TTL ~45s) returns latest HTML after ingest (within TTL semantics)
+- [ ] Soft delete -> page 404; purged after 30 days by purge job
+
+FEATURE RETENTION
+- [ ] Articles list + detail render from D1
+- [ ] Recipes list + detail render from D1
+- [ ] Events list + detail render from D1
+- [ ] Tickets & checkout functional (payment keys per env)
+- [ ] Magazine pages present and readable
+- [ ] Mailchimp integration working
+- [ ] Mailgun emails working
+- [ ] Tailwind styles & existing design intact
+
+MONITORING
+- [ ] Queues DLQ alarms configured
+- [ ] Worker exceptions tracked
+- [ ] D1 error rates monitored
+
+SECURITY
+- [ ] Sanity webhook HMAC verification
+- [ ] WP GraphQL token configured via wrangler secret
+- [ ] Preview routes are link-only (no auth) but use primary session
+
+MIGRATIONS & CI/CD
+- [ ] 001_init.sql applied in Dev/Staging/Prod
+- [ ] Deploy order respected: DB -> Consumer -> Ingest -> Renderer
+- [ ] Secrets set via wrangler secret put per env
+
+PERFORMANCE
+- [ ] Hot pages served from KV micro-cache (public)
+- [ ] Replica reads are used on public, primary on preview

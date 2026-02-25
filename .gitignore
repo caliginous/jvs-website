@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Vercel
+.vercel/
+
+# Environment files
+.env*.local
+.env
+
+# Build outputs
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+
+# Wrangler
+.wrangler/
+
+# Test results
+test-results/
+
+# Screenshots (large files)
+*.png
+
+# Logs
+logs/
+
+# Editor
+.idea/
+.vscode/
+
+# Misc
+*.zip
+*.xml
+*.docx
+
+# Embedded repos
+jvs-vercel/
+sanity-setup/sanity/
+tessera-main/

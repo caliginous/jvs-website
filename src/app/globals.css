@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FAFAFA;
+  --foreground: #263238;
+  --primary-green: #8BC34A;
+  --deep-green: #558B2F;
+  --light-leaf: #DCECC9;
+  --dark-forest: #2E7D32;
+  --coral: #FF6F61;
+  --sky-blue: #4FC3F7;
+  --lavender: #CE93D8;
+  --golden-sand: #FFCA28;
+  --off-white: #FAFAFA;
+  --warm-grey: #B0BEC5;
+  --charcoal: #263238;
+  --stone-beige: #F5F5F0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #263238;
+    --foreground: #FAFAFA;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+
+/* Custom utility classes for the new color palette */
+.bg-primary-green { background-color: var(--primary-green); }
+.bg-deep-green { background-color: var(--deep-green); }
+.bg-light-leaf { background-color: var(--light-leaf); }
+.bg-dark-forest { background-color: var(--dark-forest); }
+.bg-coral { background-color: var(--coral); }
+.bg-sky-blue { background-color: var(--sky-blue); }
+.bg-lavender { background-color: var(--lavender); }
+.bg-golden-sand { background-color: var(--golden-sand); }
+.bg-off-white { background-color: var(--off-white); }
+.bg-stone-beige { background-color: var(--stone-beige); }
+
+.text-primary-green { color: var(--primary-green); }
+.text-deep-green { color: var(--deep-green); }
+.text-light-leaf { color: var(--light-leaf); }
+.text-dark-forest { color: var(--dark-forest); }
+.text-coral { color: var(--coral); }
+.text-sky-blue { color: var(--sky-blue); }
+.text-lavender { color: var(--lavender); }
+.text-golden-sand { color: var(--golden-sand); }
+.text-charcoal { color: var(--charcoal); }
+.text-warm-grey { color: var(--warm-grey); }
+
+/* Enhanced link styling for content areas */
+.prose a,
+.content-links a {
+  color: var(--sky-blue) !important;
+  text-decoration: underline !important;
+  text-decoration-color: var(--sky-blue) !important;
+  text-decoration-thickness: 2px !important;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease !important;
+}
+
+.prose a:hover,
+.content-links a:hover {
+  color: var(--deep-green) !important;
+  text-decoration-color: var(--deep-green) !important;
+}
+
+/* Ensure links are visible in dark content */
+.prose a:visited {
+  color: var(--sky-blue) !important;
+}
+
+.prose a:focus {
+  outline: 2px solid var(--sky-blue) !important;
+  outline-offset: 2px !important;
+}

@@ -1,0 +1,261 @@
+openapi: 3.1.0
+info:
+  title: Tessera Public Events API
+  description: Public REST API for accessing event information and ticket availability
+  version: 1.3.0
+  contact:
+    name: Tessera Support
+    email: support@tessera.org
+servers:
+  - url: https://tickets.jvs.org.uk
+    description: Production server
+  - url: https://jvs-tickets-{deployment-id}.vercel.app
+    description: Preview deployments
+
+paths:
+  /api/public/events:
+    get:
+      summary: Get all upcoming events with ticket availability
+      description: |
+        Retrieves a list of all upcoming events with comprehensive ticket availability information.
+        This endpoint provides real-time data about ticket sales and availability for each event category.
+      operationId: getEvents
+      tags:
+        - Events
+      responses:
+        '200':
+          description: Successful response with events and ticket availability
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventSummary'
+              examples:
+                single_event:
+                  summary: Single event with full availability data
+                  value:
+                    - id: 1
+                      title: "Jewish Vegan Society Annual Dinner"
+                      nextDate: "2025-09-15T18:00:00.000Z"
+                      minPrice: 14
+                      seatType: "FREE_SEATING"
+                      coverImage: "https://example.com/cover.jpg"
+                      ticketAvailability:
+                        total: 50
+                        available: 41
+                        sold: 9
+                        percentageRemaining: 82
+                      categories:
+                        - id: 3
+                          name: "Adult"
+                          price: 20
+                          color: "#59bb59"
+                          maxAmount: 30
+                          sold: 7
+                          available: 23
+                          isAvailable: true
+                        - id: 4
+                          name: "Child"
+                          price: 14
+                          color: "#59bb59"
+                          maxAmount: 10
+                          sold: 2
+                          available: 8
+                          isAvailable: true
+                        - id: 5
+                          name: "Supporter"
+                          price: 25
+                          color: "#59bb59"
+                          maxAmount: 10
+                          sold: 0
+                          available: 10
+                          isAvailable: true
+                      hasAvailableTickets: true
+                      isSoldOut: false
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    EventSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the event
+          example: 1
+        title:
+          type: string
+          description: Name of the event
+          example: "Jewish Vegan Society Annual Dinner"
+        description:
+          type: string
+          nullable: true
+          description: Detailed description of the event (up to 200 words)
+          example: "Join us for an evening of celebration and community building. This annual dinner brings together members of the Jewish Vegan Society to share stories, enjoy delicious plant-based cuisine, and strengthen our commitment to ethical eating and environmental stewardship."
+        nextDate:
+          type: string
+          format: date-time
+          description: ISO 8601 date of the next occurrence of this event
+          example: "2024-12-25T18:00:00.000Z"
+        minPrice:
+          type: number
+          format: float
+          description: Lowest ticket price for this event
+          example: 25.00
+        seatType:
+          type: string
+          description: Type of seating arrangement
+          enum: [free, seatmap]
+          example: "free"
+        coverImage:
+          type: string
+          nullable: true
+          description: URL to the event's cover image
+          example: "https://example.com/image.jpg"
+        venue:
+          $ref: '#/components/schemas/VenueInfo'
+        ticketAvailability:
+          $ref: '#/components/schemas/TicketAvailability'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryAvailability'
+          description: Available ticket categories with pricing and availability
+        hasAvailableTickets:
+          type: boolean
+          description: Whether any tickets are currently available
+          example: true
+        isSoldOut:
+          type: boolean
+          description: Whether all tickets have been sold
+          example: false
+      required:
+        - id
+        - title
+        - nextDate
+        - seatType
+        - ticketAvailability
+        - categories
+        - hasAvailableTickets
+        - isSoldOut
+
+    VenueInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the venue
+          example: "Community Hall"
+        address:
+          type: string
+          nullable: true
+          description: Street address of the venue
+          example: "123 Main Street"
+        city:
+          type: string
+          nullable: true
+          description: City where the venue is located
+          example: "London"
+        postcode:
+          type: string
+          nullable: true
+          description: Postal code for the venue
+          example: "SW1A 1AA"
+      required:
+        - name
+
+    TicketAvailability:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of tickets available for this event
+          example: 100
+        available:
+          type: integer
+          description: Number of tickets currently available
+          example: 75
+        sold:
+          type: integer
+          description: Number of tickets already sold
+          example: 25
+        percentageRemaining:
+          type: integer
+          description: Percentage of tickets remaining (0-100)
+          example: 75
+        hasGlobalLimit:
+          type: boolean
+          description: Whether a global ticket limit is applied across all categories
+          example: true
+      required:
+        - total
+        - available
+        - sold
+        - percentageRemaining
+        - hasGlobalLimit
+
+    CategoryAvailability:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the ticket category
+          example: 1
+        name:
+          type: string
+          description: Name of the ticket category
+          example: "Adult"
+        price:
+          type: number
+          format: float
+          description: Price for this ticket category
+          example: 25.00
+        color:
+          type: string
+          nullable: true
+          description: Color code for this category (used in seat maps)
+          example: "#4CAF50"
+        maxAmount:
+          type: integer
+          description: Maximum number of tickets available in this category
+          example: 50
+        sold:
+          type: integer
+          description: Number of tickets sold in this category
+          example: 20
+        available:
+          type: integer
+          description: Number of tickets available in this category
+          example: 30
+        isAvailable:
+          type: boolean
+          description: Whether tickets are currently available in this category
+          example: true
+      required:
+        - id
+        - name
+        - price
+        - maxAmount
+        - sold
+        - available
+        - isAvailable
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Internal server error"
+
+tags:
+  - name: Events
+    description: Event-related operations
