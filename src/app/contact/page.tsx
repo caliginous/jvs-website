@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useEmailSettings } from '@/hooks/useEmailSettings';
 import { Turnstile } from '@marsidev/react-turnstile';
 
-export default function ContactPage() {
+function ContactPageContent() {
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
@@ -340,5 +340,31 @@ export default function ContactPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50">
+        <Navbar />
+        <section className="bg-[#E1F0D1] text-gray-900">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
+              <p className="text-xl max-w-3xl mx-auto">Get in touch with JVS</p>
+            </div>
+          </div>
+        </section>
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="animate-pulse bg-gray-200 h-96 rounded-lg"></div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    }>
+      <ContactPageContent />
+    </Suspense>
   );
 } 
