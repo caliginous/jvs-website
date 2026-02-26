@@ -43,3 +43,6 @@ logs/
 jvs-vercel/
 sanity-setup/sanity/
 tessera-main/
+
+# Database backups (may contain secrets)
+DB_backup/

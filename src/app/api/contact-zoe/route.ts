@@ -31,7 +31,7 @@ export async function POST(request: NextRequest, { params }: { params: any }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        secret: '0x4AAAAAAB3p-S0Gd9y1hLUorQrFu9pDVEw',
+        secret: process.env.TURNSTILE_SECRET_KEY,
         response: turnstileToken,
       }),
     });
