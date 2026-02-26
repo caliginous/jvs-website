@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useEmailSettings } from '@/hooks/useEmailSettings';
 import { Turnstile } from '@marsidev/react-turnstile';
 
 export default function ContactPage() {
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,9 +17,26 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [turnstileToken, setTurnstileToken] = useState<string>('');
   const turnstileRef = useRef<any>(null);
   const { infoEmail, loading: emailLoading } = useEmailSettings();
+
+  useEffect(() => {
+    if (searchParams.get('success') === 'true') {
+      setSubmitStatus('success');
+    } else if (searchParams.get('error')) {
+      setSubmitStatus('error');
+      const errorType = searchParams.get('error');
+      if (errorType === 'missing-fields') {
+        setErrorMessage('Please fill in all required fields.');
+      } else if (errorType === 'verification-failed') {
+        setErrorMessage('Security verification failed. Please try again.');
+      } else {
+        setErrorMessage('Sorry, there was an error sending your message. Please try again.');
+      }
+    }
+  }, [searchParams]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -218,11 +237,11 @@ export default function ContactPage() {
 
               {submitStatus === 'error' && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                  Sorry, there was an error sending your message. Please try again or contact us directly.
+                  {errorMessage || 'Sorry, there was an error sending your message. Please try again or contact us directly.'}
                 </div>
               )}
               
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} action="/api/contact" method="POST" className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                     Name
@@ -303,6 +322,8 @@ export default function ContactPage() {
                     }}
                   />
                 </div>
+                {/* Hidden field for Turnstile token (for native form submission fallback) */}
+                <input type="hidden" name="turnstileToken" value={turnstileToken} />
 
                 <button
                   type="submit"
